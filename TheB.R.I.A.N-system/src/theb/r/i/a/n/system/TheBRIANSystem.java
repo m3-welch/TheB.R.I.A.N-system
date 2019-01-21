@@ -14,6 +14,7 @@ import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -23,6 +24,13 @@ import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.control.TitledPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 
 /**
@@ -222,6 +230,116 @@ public class TheBRIANSystem extends Application {
         
         //set the admin page contents to the admin grid pane
         adminPage.setContent(admin);
+        
+        
+        /////////////////////
+        ///               ///
+        ///   -Viewer-    ///
+        ///               ///
+        /////////////////////
+        
+        //create a grid pane for the viewer tab and set all the preferences
+        GridPane viewer = new GridPane();
+        viewer.setVgap(6);
+        viewer.setHgap(6);
+        viewer.setPadding(new Insets(5, 5, 5, 5));
+        GridPane buttons = new GridPane();
+        GridPane text = new GridPane();
+        GridPane root = new GridPane();
+        buttons.setVgap(6);
+        buttons.setHgap(6);
+        buttons.setPadding(new Insets(5, 5, 5, 5));
+        text.setVgap(6);
+        text.setHgap(6);
+        text.setPadding(new Insets(5, 5, 5, 5));
+        root.setVgap(6);
+        root.setHgap(6);
+        root.setPadding(new Insets(5, 5, 5, 5));
+        
+        //add the nodes to the viewer grid pane
+        Button viewFixtures = new Button("View Fixture and Result Chart");
+        Button teamStats = new Button("Show All Team Stats");
+        Button teamRanks = new Button("Show All Team Rankings");
+        Button viewScores = new Button("View A Match Scores");
+        Label textArea = new Label();
+        textArea.setPrefSize(400, 800);
+        textArea.setWrapText(true);
+        textArea.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, null, new BorderWidths(1))));
+        textArea.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
+        textArea.setAlignment(Pos.TOP_LEFT);
+        
+        //add the nodes to the viewer grid pane
+        buttons.add(viewFixtures, 0, 0);
+        buttons.add(teamStats, 0, 1);
+        buttons.add(teamRanks, 0, 2);
+        buttons.add(viewScores, 0, 3);
+        text.add(textArea, 0, 0);
+        root.add(buttons, 0, 0);
+        root.add(text, 1, 0);
+        
+        //add the grid pane to the viewer tab
+        viewerPage.setContent(root);
+        
+        /////////////////////////////////////////
+        ///// scoresheets tabs ////////////////
+        /////////////////////////////
+        
+        //create a grid pane for the scoresheet tab amd sey all the preferences
+        GridPane scoresheet = new GridPane();
+        scoresheet.setVgap(4);
+        scoresheet.setHgap(4);
+        scoresheet.setPadding(new Insets(5, 5, 5, 5));
+        GridPane sides = new GridPane();
+        sides.setVgap(4);
+        sides.setHgap(4);
+        sides.setPadding(new Insets(5, 5, 5, 5));
+        GridPane scoreroot = new GridPane();
+        scoreroot.setVgap(4);
+        scoreroot.setHgap(4);
+        scoreroot.setPadding(new Insets(5, 5, 5, 5));
+        GridPane grid = new GridPane();
+        grid.setVgap(4);
+        grid.setHgap(4);
+        grid.setPadding(new Insets(5, 5, 5, 5));
+        
+        //Create nodes
+        Button newSheet = new Button("New Sheet");
+        Button modifySheet = new Button("Modify Sheet");
+        Label homeTeamLabel = new Label("Home Team");
+        Label awayTeamLabel = new Label("Away Team");
+        ComboBox homeTeam = new ComboBox();
+        ComboBox awayTeam = new ComboBox();
+        Label singleSets = new Label("Single Sets");
+        Label doubleSet = new Label("Double Set");
+        ComboBox awayPlayer1 = new ComboBox();
+        ComboBox awayPlayer2 = new ComboBox();
+        ComboBox homePlayer1 = new ComboBox();
+        ComboBox homePlayer2 = new ComboBox();
+        TextField finalTeamScores = new TextField("Final Team Scores");
+        
+        //add the nodes to the gridpane
+        scoresheet.add(newSheet, 0, 0);
+        scoresheet.add(modifySheet, 1, 0);
+        sides.add(homeTeamLabel, 0, 0);
+        sides.add(homeTeam, 1, 0);
+        sides.add(awayTeamLabel, 2, 0);
+        sides.add(awayTeam, 3, 0);
+        grid.add(singleSets, 0, 0);
+        grid.add(awayPlayer1, 1, 0);
+        grid.add(awayPlayer2, 2, 0);
+        grid.add(homePlayer1, 0, 1);
+        grid.add(homePlayer2, 0, 2);
+        grid.add(doubleSet, 0, 3);
+        grid.add(finalTeamScores, 2, 3);
+        
+        
+        //add panes to the root
+        scoreroot.add(scoresheet, 0, 0);
+        scoreroot.add(sides, 0, 1);
+        scoreroot.add(grid, 0, 2);
+        
+        //set the scoresheet tabs content
+        scoresheets.setContent(scoreroot);
         
         //add the 4 tabs to the tab pane
         tabs.getTabs().add(adminPage);
