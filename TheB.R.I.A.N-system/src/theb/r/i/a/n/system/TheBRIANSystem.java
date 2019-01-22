@@ -379,7 +379,6 @@ public class TheBRIANSystem extends Application {
         
         
         //add the nodes to the gridpane
-        scoreroot.add(calculate, 0, 3);
         scoresheet.add(newSheet, 0, 0);
         scoresheet.add(modifySheet, 1, 0);
         sides.add(homeTeamLabel, 0, 0);
@@ -398,6 +397,7 @@ public class TheBRIANSystem extends Application {
         grid.add(set3, 1, 2);
         grid.add(set4, 2, 2);
         grid.add(doubleSet, 1, 3);
+        scoreroot.add(calculate, 0, 3);
         
         
         //add panes to the root
