@@ -1,0 +1,129 @@
+/////////////////////////////////////////
+        ///// scoresheets tabs ////////////////
+        /////////////////////////////
+        
+        //create a grid pane for the scoresheet tab amd sey all the preferences
+        GridPane scoresheet = new GridPane();
+        scoresheet.setVgap(4);
+        scoresheet.setHgap(4);
+        scoresheet.setPadding(new Insets(5, 5, 5, 5));
+        
+        GridPane sides = new GridPane();
+        sides.setVgap(4);
+        sides.setHgap(4);
+        sides.setPadding(new Insets(5, 5, 5, 5));
+        
+        GridPane scoreroot = new GridPane();
+        scoreroot.setVgap(4);
+        scoreroot.setHgap(4);
+        scoreroot.setPadding(new Insets(5, 5, 5, 5));
+        
+        GridPane grid = new GridPane();
+        grid.setVgap(4);
+        grid.setHgap(4);
+        grid.setPadding(new Insets(5, 5, 5, 5));
+        
+        GridPane set1 = new GridPane();
+        set1.setVgap(4);
+        set1.setHgap(4);
+        set1.setPadding(new Insets(5, 5, 5, 5));
+        
+        GridPane set2 = new GridPane();
+        set2.setVgap(4);
+        set2.setHgap(4);
+        set2.setPadding(new Insets(5, 5, 5, 5));
+        
+        GridPane set3 = new GridPane();
+        set3.setVgap(4);
+        set3.setHgap(4);
+        set3.setPadding(new Insets(5, 5, 5, 5));
+        
+        GridPane set4 = new GridPane();
+        set4.setVgap(4);
+        set4.setHgap(4);
+        set4.setPadding(new Insets(5, 5, 5, 5));
+        
+        GridPane doubleSet = new GridPane();
+        doubleSet.setVgap(4);
+        doubleSet.setHgap(4);
+        doubleSet.setPadding(new Insets(5, 5, 5, 5));
+        
+        //Create nodes
+        Button newSheet = new Button("New Sheet");
+        Button modifySheet = new Button("Modify Sheet");
+        Label homeTeamLabel = new Label("Home Team");
+        Label awayTeamLabel = new Label("Away Team");
+        ComboBox homeTeam = new ComboBox();
+        ComboBox awayTeam = new ComboBox();
+        Label singleSets = new Label("Single Sets");
+        Label doubleSetLabel = new Label("Double Set");
+        ComboBox awayPlayer1 = new ComboBox();
+        ComboBox awayPlayer2 = new ComboBox();
+        ComboBox homePlayer1 = new ComboBox();
+        ComboBox homePlayer2 = new ComboBox();
+        TextField finalTeamScores = new TextField("Final Team Scores");
+        TextField set11 = new TextField("0:0"); 
+        TextField set12 = new TextField("0:0");
+        TextField set13 = new TextField("0:0");
+        TextField set21 = new TextField("0:0");
+        TextField set22 = new TextField("0:0");
+        TextField set23 = new TextField("0:0");
+        TextField set31 = new TextField("0:0");
+        TextField set32 = new TextField("0:0");
+        TextField set33 = new TextField("0:0");
+        TextField set41 = new TextField("0:0");
+        TextField set42 = new TextField("0:0");
+        TextField set43 = new TextField("0:0");
+        TextField setd1 = new TextField("0:0");
+        TextField setd2 = new TextField("0:0");
+        TextField setd3 = new TextField("0:0");
+        Button calculate = new Button("Calculate and Submit scores");
+        
+        ////// TODO: Make the textfields for sets uneditable & put the calculate button in
+        
+        //add the nodes to the gridpane
+        scoresheet.add(newSheet, 0, 0);
+        scoresheet.add(modifySheet, 1, 0);
+        sides.add(homeTeamLabel, 0, 0);
+        sides.add(homeTeam, 1, 0);
+        sides.add(awayTeamLabel, 2, 0);
+        sides.add(awayTeam, 3, 0);
+        grid.add(singleSets, 0, 0);
+        grid.add(awayPlayer1, 1, 0);
+        grid.add(awayPlayer2, 2, 0);
+        grid.add(homePlayer1, 0, 1);
+        grid.add(set1, 1, 1);
+        grid.add(set2, 2, 1);
+        grid.add(homePlayer2, 0, 2);
+        grid.add(set1, 1, 2);
+        grid.add(set2, 2, 2);
+        grid.add(doubleSetLabel, 0, 3);
+        grid.add(doubleSet, 1, 3);
+        grid.add(finalTeamScores, 2, 3);
+        set1.add(set11, 0, 0);
+        set1.add(set12, 0, 1);
+        set1.add(set13, 0, 2);
+        set2.add(set21, 0, 0);
+        set2.add(set22, 0, 1);
+        set2.add(set23, 0, 2);
+        set3.add(set31, 0, 0);
+        set3.add(set32, 0, 1);
+        set3.add(set33, 0, 2);
+        set4.add(set41, 0, 0);
+        set4.add(set42, 0, 1);
+        set4.add(set43, 0, 2);
+        doubleSet.add(setd1, 0, 0);
+        doubleSet.add(setd2, 0, 1);
+        doubleSet.add(setd3, 0, 2);
+        
+        //add panes to the root
+        scoreroot.add(scoresheet, 0, 0);
+        scoreroot.add(sides, 0, 1);
+        scoreroot.add(grid, 0, 2);
+        
+        //set the scoresheet tabs content
+        scoresheets.setContent(scoreroot);
+        
+        //////////////////////////////////
+        //////    Setting tabs //////////
+        /////////////////////////////////
