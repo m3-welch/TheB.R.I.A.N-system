@@ -95,7 +95,13 @@ public class TheBRIANSystem extends Application {
         //create the button and textfield for the user inputs
         TextField newTeamName = new TextField("Enter a new team name");
         Button submitTeamName = new Button("Add Team");
-        
+        submitTeamName.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                String teamName = newTeamName.getText();
+                System.out.println(teamName + " has been added");
+            }
+        });
         
         //add the nodes to the new team grid pane
         newTeamGrid.add(newTeamName, 0, 0);
@@ -129,8 +135,7 @@ public class TheBRIANSystem extends Application {
         //create a textfield, a dropdown for teams and a button for the new 
         //player
         TextField playerName = new TextField("John");
-        Button addPlayer = new Button("Add Player");
-        
+        Button addPlayer = new Button("Add Player");        
         ComboBox teamList = new ComboBox();
         ///////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////
@@ -139,6 +144,15 @@ public class TheBRIANSystem extends Application {
         //////                 -TODO-                    //////
         ///////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////
+        
+        addPlayer.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                String newPlayerName = playerName.getText();
+                System.out.println(newPlayerName + " has been added");
+            }
+        });
+        
         
         //Add the nodes to the new player grid pane
         newPlayerGrid.add(playerName, 0, 0);
@@ -177,6 +191,13 @@ public class TheBRIANSystem extends Application {
         warning.setText("Warning: All pre-existing match information \n"
                 + "will be removed.");
         Button generateFixturesButton = new Button("Generate Fixtures");
+        generateFixturesButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("--GENERATING FIXTURES--");
+            }
+        });
+        
 
         //add the nodes to the generate fixtures grid
         generateFixturesGrid.add(description, 0, 0);
@@ -216,6 +237,12 @@ public class TheBRIANSystem extends Application {
         info.setText("You can also generate it by clicking the button \n"
                 + " on the right.");
         Button generateStatsButton = new Button("Generate Statistics");
+        generateStatsButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("--GENERATING STATISTICS--");
+            }
+        });
 
         //add the nodes to the generate fixtures grid
         generateStatsGrid.add(auto, 0, 0);
@@ -246,14 +273,14 @@ public class TheBRIANSystem extends Application {
         GridPane buttons = new GridPane();
         GridPane text = new GridPane();
         GridPane root = new GridPane();
-        buttons.setVgap(6);
+        buttons.setVgap(150);
         buttons.setHgap(6);
         buttons.setPadding(new Insets(5, 5, 5, 5));
         text.setVgap(6);
         text.setHgap(6);
         text.setPadding(new Insets(5, 5, 5, 5));
         root.setVgap(6);
-        root.setHgap(6);
+        root.setHgap(200);
         root.setPadding(new Insets(5, 5, 5, 5));
         
         //add the nodes to the viewer grid pane
@@ -261,12 +288,42 @@ public class TheBRIANSystem extends Application {
         Button teamStats = new Button("Show All Team Stats");
         Button teamRanks = new Button("Show All Team Rankings");
         Button viewScores = new Button("View A Match Scores");
+        viewFixtures.setPrefWidth(205);
         Label textArea = new Label();
         textArea.setPrefSize(400, 800);
         textArea.setWrapText(true);
         textArea.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, null, new BorderWidths(1))));
         textArea.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
         textArea.setAlignment(Pos.TOP_LEFT);
+        
+        viewFixtures.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                textArea.setText("--VIEWING FIXTURES AND RESULT CHART--");
+                System.out.println("--VIEW FIXTURES AND RESULTS--");
+            }
+        });
+        teamStats.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                textArea.setText("--VIEWING TEAM STATISTICS--");
+                System.out.println("--VIEWING STATISTICS--");
+            }
+        });
+        teamRanks.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                textArea.setText("--VIEWING TEAM RANKINGS--");
+                System.out.println("--VIEWING RANKINGS--");
+            }
+        });
+        viewScores.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                textArea.setText("--VIEWING SCORES--");
+                System.out.println("--VIEWING SCORES--");
+            }
+        });
         
         //add the nodes to the viewer grid pane
         buttons.add(viewFixtures, 0, 0);
@@ -361,6 +418,25 @@ public class TheBRIANSystem extends Application {
         TextField setd3 = new TextField("0:0");
         Button calculate = new Button("Calculate and Submit scores");
         
+        newSheet.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("--CREATING A NEW WORKSHEET--");
+            }
+        });
+        modifySheet.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("--SELECTING A WORKSHEET TO MODIFY--");
+            }
+        });
+        calculate.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("--CALCULATING--");
+            }
+        });
+        
         set1.add(set11, 0, 0);
         set1.add(set12, 0, 1);
         set1.add(set13, 0, 2);
@@ -417,7 +493,7 @@ public class TheBRIANSystem extends Application {
         tabs.setSide(Side.LEFT);
         
         //set the scene with the window dimensions
-        Scene scene = new Scene(tabs, 1200, 600);
+        Scene scene = new Scene(tabs, 800, 600);
         
         //set the title and show
         primaryStage.setTitle("TheB.R.I.A.N. system");
