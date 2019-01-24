@@ -40,26 +40,19 @@ import javafx.scene.layout.GridPane;
 public class TheBRIANSystem extends Application {
     
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage){
         
         //create the main tab pane that will be the basis of the whole UI
         TabPane tabs = new TabPane();
-        //////////////////////////////////////////////////////
-        //////////////////////////////////////////////////////
-        //////////////////////////////////////////////////////
-        /////                  -TODO-                    /////
-        /////           Need to figure out how to        /////
-        /////           stop user closing tabs           /////
-        /////                  -TODO-                    /////
-        //////////////////////////////////////////////////////
-        //////////////////////////////////////////////////////
-        //////////////////////////////////////////////////////
-        
         
         //create the 3 tabs to be used with their appropriate titles
         Tab adminPage = new Tab("Admin");
         Tab viewerPage = new Tab("Viewer");
         Tab scoresheets = new Tab("Scoresheets");
+        
+        adminPage.setClosable(false);
+        viewerPage.setClosable(false);
+        scoresheets.setClosable(false);
         
         ////////////////////
         ///              ///
@@ -270,9 +263,13 @@ public class TheBRIANSystem extends Application {
         viewer.setVgap(6);
         viewer.setHgap(6);
         viewer.setPadding(new Insets(5, 5, 5, 5));
+        viewer.setGridLinesVisible(true);
         GridPane buttons = new GridPane();
+        buttons.setGridLinesVisible(true);
         GridPane text = new GridPane();
+        text.setGridLinesVisible(true);
         GridPane root = new GridPane();
+        root.setGridLinesVisible(true);
         buttons.setVgap(150);
         buttons.setHgap(6);
         buttons.setPadding(new Insets(5, 5, 5, 5));
@@ -288,6 +285,11 @@ public class TheBRIANSystem extends Application {
         Button teamStats = new Button("Show All Team Stats");
         Button teamRanks = new Button("Show All Team Rankings");
         Button viewScores = new Button("View A Match Scores");
+        viewFixtures.setMinWidth(300);
+        teamStats.setMinWidth(300);
+        teamRanks.setMinWidth(300);
+        viewScores.setMinWidth(300);
+        
         viewFixtures.setPrefWidth(205);
         Label textArea = new Label();
         textArea.setPrefSize(400, 800);
@@ -339,7 +341,7 @@ public class TheBRIANSystem extends Application {
         
         /////////////////////////////////////////
         ///// scoresheets tabs ////////////////
-        /////////////////////////////
+        ///////////////////////////////////////
         
         //create a grid pane for the scoresheet tab amd sey all the preferences
         GridPane scoresheet = new GridPane();
@@ -389,19 +391,27 @@ public class TheBRIANSystem extends Application {
         
         //Create nodes
         Button newSheet = new Button("New Sheet");
+        newSheet.setMinWidth(300);
         Button modifySheet = new Button("Modify Sheet");
+        modifySheet.setMinWidth(300);
         Label homeTeamLabel = new Label("Home Team");
         Label awayTeamLabel = new Label("Away Team");
         ComboBox homeTeam = new ComboBox();
+        homeTeam.setMinWidth(150);
         ComboBox awayTeam = new ComboBox();
+        awayTeam.setMinWidth(150);
         Label singleSets = new Label("Single Sets");
         Label doubleSetLabel = new Label("Double Set");
         ComboBox awayPlayer1 = new ComboBox();
+        awayPlayer1.setMinWidth(150);
         ComboBox awayPlayer2 = new ComboBox();
+        awayPlayer2.setMinWidth(150);
         ComboBox homePlayer1 = new ComboBox();
+        homePlayer1.setMinWidth(100);
         ComboBox homePlayer2 = new ComboBox();
+        homePlayer2.setMinWidth(100);
         TextField finalTeamScores = new TextField("Final Team Scores");
-        TextField set11 = new TextField("0:0"); 
+        TextField set11 = new TextField("0:0");
         TextField set12 = new TextField("0:0");
         TextField set13 = new TextField("0:0");
         TextField set21 = new TextField("0:0");
@@ -416,7 +426,23 @@ public class TheBRIANSystem extends Application {
         TextField setd1 = new TextField("0:0");
         TextField setd2 = new TextField("0:0");
         TextField setd3 = new TextField("0:0");
+        set11.setEditable(false);
+        set12.setEditable(false);
+        set13.setEditable(false);
+        set21.setEditable(false);
+        set22.setEditable(false);
+        set23.setEditable(false);
+        set31.setEditable(false);
+        set32.setEditable(false);
+        set33.setEditable(false);
+        set41.setEditable(false);
+        set42.setEditable(false);
+        set43.setEditable(false);
+        setd1.setEditable(false);
+        setd2.setEditable(false);
+        setd3.setEditable(false);
         Button calculate = new Button("Calculate and Submit scores");
+        calculate.setMinWidth(500);
         
         newSheet.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -499,11 +525,10 @@ public class TheBRIANSystem extends Application {
         primaryStage.setTitle("TheB.R.I.A.N. system");
         primaryStage.setScene(scene);
         primaryStage.show();
+        
     }
 
-    /**
-     * @param args the command line arguments
-     */
+
     public static void main(String[] args) {
         launch(args);
     }
