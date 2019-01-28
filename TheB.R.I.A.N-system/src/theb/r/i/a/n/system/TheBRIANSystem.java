@@ -571,6 +571,7 @@ public class TheBRIANSystem extends Application {
     public static void main(String[] args) {
         Statistics stats = new Statistics();
         Thread statsThread = new Thread(stats);
+        statsThread.setDaemon(true);
         statsThread.start();
         launch(args);
     }
