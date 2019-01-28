@@ -32,11 +32,50 @@ import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
+import java.util.*;
+import java.lang.*;
 
 /**
  *
  * @author morga
  */
+
+class Statistics implements Runnable {
+    
+    public void updateStats(){
+        System.out.println("UPDATE STATS");
+    }
+    
+    @Override
+    public void run(){
+    long start = (System.currentTimeMillis() / 1000);
+    long current = start;
+    long elapsed = current;
+    boolean reset = false;
+    long elapsed_temp = 0;
+    
+    while(true){
+        current = (System.currentTimeMillis() / 1000);
+        elapsed = current - start;
+
+        if (reset){
+            start = (System.currentTimeMillis() / 1000);
+            reset = false;
+        }
+        if(elapsed == 100){
+            updateStats();
+            reset = true;
+        }
+        
+        if(elapsed != elapsed_temp){
+            System.out.println(elapsed);
+        }
+        
+        elapsed_temp = elapsed;
+    }
+}
+    
+}
 public class TheBRIANSystem extends Application {
     
     @Override
@@ -233,7 +272,7 @@ public class TheBRIANSystem extends Application {
         generateStatsButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                System.out.println("--GENERATING STATISTICS--");
+                System.out.println("UPDATE STATS");
             }
         });
 
@@ -530,6 +569,10 @@ public class TheBRIANSystem extends Application {
 
 
     public static void main(String[] args) {
+        Statistics stats = new Statistics();
+        Thread statsThread = new Thread(stats);
+        statsThread.setDaemon(true);
+        statsThread.start();
         launch(args);
     }
     
