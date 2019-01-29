@@ -34,15 +34,261 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import java.util.*;
 import java.lang.*;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.SingleSelectionModel;
+import javafx.stage.Modality;
 
 /**
  *
  * @author morga
  */
 
+class Game{
+    int homeScore;
+    int awayScore;
+    Team winner;
+    
+    public int getHomeScore(){
+        return homeScore;
+    }
+    
+    public void setHomeScore(int score){
+        homeScore = score;
+    }
+    
+    public int getAwayScore(){
+        return awayScore;
+    }
+    
+    public void setAwayScore(int score){
+        awayScore = score;
+    }
+    
+    public Team getWinner(){
+        return winner;
+    }
+    
+    public void setWinner(Team team){
+        winner = team;
+    }
+    
+    public String toString(){
+        return homeScore + ":" + awayScore;
+    }
+    
+}
+
+class Set{
+    Team homeTeam;
+    Team awayTeam;
+    List<Game> games = new ArrayList<Game>();
+    Team winner;
+    
+    public Team getHomeTeam(){
+        return homeTeam;
+    }
+    
+    public void setHomeTeam(Team team){
+        homeTeam = team;
+    }
+    
+    public Team getAwayTeam(){
+        return awayTeam;
+    }
+    
+    public void setAwayTeam(Team team){
+        awayTeam = team;
+    }
+    
+    public List<Game> getGames(){
+        return games;
+    }
+    
+    public void setGames(ArrayList games){
+        this.games = games;
+    }
+ 
+    public void calculateWinner(){
+        int home = 0;
+        for(int i = 0; i < 3; i++){
+            if(games.get(i).homeScore > games.get(i).awayScore){
+                home++;
+                games.get(i).setWinner(homeTeam);
+            }
+            else{
+                games.get(i).setWinner(awayTeam);
+            }
+        }
+        if(home >= 2){
+            winner = homeTeam;
+        }
+        else{
+            winner = awayTeam;
+        }
+    }
+    
+    public Team getWinner(){
+        return winner;
+    }
+}
+
+class Match{
+    Team homeTeam;
+    Team awayTeam;
+    Player homePlayer1;
+    Player homePlayer2;
+    Player awayPlayer1;
+    Player awayPlayer2;
+    List<Set> sets = new ArrayList<Set>();
+    Team winner;
+    
+}
+
+class Player{
+    String firstName;
+    String lastName;
+    
+    public Player(String first, String last){
+        firstName = first;
+        lastName = last;
+    }
+    
+    public String getFirstName(){
+        return firstName;
+    }
+    
+    public void setFirstName(String name){
+        firstName = name;
+    }
+    
+    public String getLastName(){
+        return lastName;
+    }
+    
+    public void setLastName(String name){
+        lastName = name;
+    }
+}
+
+class Team{
+    String name;
+    List<Player> players = new ArrayList<Player>();
+    int matchesPlayed;
+    int matchesWon;
+    int setsWon;
+    
+    public Team(String name){
+        this.name = name;
+    }
+    
+    public String getName(){
+        return name;
+    }
+    
+    public void setName(String name){
+        this.name = name;
+    }
+    
+    public int getMatchesPlayed(){
+        return matchesPlayed;
+    }
+    
+    public void setMatchesPlayed(int matches){
+        matchesPlayed = matches;
+    }
+    
+    public void addMatchPlayed(){
+        matchesPlayed++;
+    }
+    
+    public int getMatchesWon(){
+        return matchesWon;
+    }
+    
+    public void setMatchesWon(int wins){
+        matchesWon = wins;
+    }
+    
+    public void addMatchWin(){
+        matchesWon++;
+    }
+    
+    public int getSetsWon(){
+        return setsWon;
+    }
+    
+    public void setSetsWon(int sets){
+        setsWon = sets;
+    }
+    
+    public void addSetWin(){
+        setsWon++;
+    }
+    
+    public List<Player> getPlayers(){
+        return players;
+    }
+    
+    public void setPlayers(ArrayList players){
+        this.players = players;
+    }
+    
+    public void addPlayer(Player player){
+        players.add(player);
+    }
+    
+    public void removePlayer(Player player){
+        players.remove(player);
+    }
+    
+}
+
+class Login{
+    static private void submitAndClose(Stage window, String password){
+        if(password.equals("admin")){
+            TheBRIANSystem.auth = true;
+            window.close();
+        }
+        else{
+            Alert alert = new Alert(AlertType.WARNING);
+            alert.setTitle("INCORRECT PASSWORD!");
+            alert.setHeaderText("Re-enter the password to try again");
+            alert.showAndWait();
+        }
+    }
+    
+    public static void display(){
+    Stage popupwindow = new Stage();
+    popupwindow.initModality(Modality.APPLICATION_MODAL);
+    popupwindow.setTitle("Admin Login");
+    
+    Label enter_password = new Label("Enter the admin password: ");
+    PasswordField password = new PasswordField();
+    Button submit = new Button("Submit");
+    submit.setOnAction(e-> submitAndClose(popupwindow, password.getText()));
+    
+    GridPane login = new GridPane();
+    login.setVgap(4);
+    login.setHgap(4);
+    login.setPadding(new Insets(5, 5, 5, 5));
+    
+    login.add(enter_password, 0, 0);
+    login.add(password, 0, 1);
+    login.add(submit, 1, 1);
+    
+    Scene loginscene = new Scene(login, 300, 200);
+    popupwindow.setScene(loginscene);
+    popupwindow.showAndWait();
+    }
+}
+
 class Statistics implements Runnable {
     
-    public void updateStats(){
+    static public void updateStats(){
         System.out.println("UPDATE STATS");
     }
     
@@ -77,6 +323,7 @@ class Statistics implements Runnable {
     
 }
 public class TheBRIANSystem extends Application {
+    static public boolean auth = false;
     
     @Override
     public void start(Stage primaryStage){
@@ -88,6 +335,21 @@ public class TheBRIANSystem extends Application {
         Tab adminPage = new Tab("Admin");
         Tab viewerPage = new Tab("Viewer");
         Tab scoresheets = new Tab("Scoresheets");
+        
+        SingleSelectionModel<Tab> selectionModel = tabs.getSelectionModel();
+        
+        tabs.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
+
+            @Override
+            public void changed(ObservableValue<? extends Tab> observable, Tab oldTab, Tab newTab) {
+                if(newTab == adminPage) {
+                    Login.display();
+                }
+                if(!auth){
+                    selectionModel.select(viewerPage);
+                }
+            }
+            });
         
         adminPage.setClosable(false);
         viewerPage.setClosable(false);
@@ -272,7 +534,7 @@ public class TheBRIANSystem extends Application {
         generateStatsButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                System.out.println("UPDATE STATS");
+                Statistics.updateStats();
             }
         });
 
@@ -550,9 +812,9 @@ public class TheBRIANSystem extends Application {
         scoresheets.setContent(scoreroot);
         
         //add the 4 tabs to the tab pane
-        tabs.getTabs().add(adminPage);
         tabs.getTabs().add(viewerPage);
         tabs.getTabs().add(scoresheets);
+        tabs.getTabs().add(adminPage);
         
         //set the tabs to be down the left hand side
         tabs.setSide(Side.LEFT);
