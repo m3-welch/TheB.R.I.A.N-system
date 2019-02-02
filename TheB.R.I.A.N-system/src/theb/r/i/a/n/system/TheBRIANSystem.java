@@ -146,6 +146,80 @@ class Match{
     List<Set> sets = new ArrayList<Set>();
     Team winner;
     
+    public Team getHomeTeam(){
+        return homeTeam;
+    }
+    
+    public void setHomeTeam(Team team){
+        homeTeam = team;
+    }
+    
+    public Team getAwayTeam(){
+        return awayTeam;
+    }
+    
+    public void setAwayTeam(Team team){
+        awayTeam = team;
+    }
+    
+    public Player getHomePlayer1(){
+        return homePlayer1;
+    }
+    
+    public Player getHomePlayer2(){
+        return homePlayer2;
+    }
+    
+    public Player getAwayPlayer1(){
+        return awayPlayer1;
+    }
+        
+    public Player getAwayPlayer2(){
+        return awayPlayer2;
+    }
+    
+    public void setHomePlayer1(Player player){
+        homePlayer1 = player;
+    }
+    
+    public void setHomePlayer2(Player player){
+        homePlayer2 = player;
+    }
+    
+    public void setAwayPlayer1(Player player){
+        awayPlayer1 = player;
+    }
+    
+    public void setAwayPlayer2(Player player){
+        awayPlayer2 = player;
+    }
+    
+    public List<Set> getSets(){
+        return sets;
+    }
+    
+    public void setSets(List<Set> sets){
+        this.sets = sets;
+    }
+    
+    public void calculateWinner(){
+        int home = 0;
+        for(int i = 0; i < 5; i++){
+            if(sets.get(i).winner == homeTeam){
+                home++;
+            }
+        }
+        if(home >= 3){
+            winner = homeTeam;
+        }
+        else{
+            winner = awayTeam;
+        }
+    }
+    
+    public Team getWinner(){
+        return winner;
+    }
 }
 
 class Player{
