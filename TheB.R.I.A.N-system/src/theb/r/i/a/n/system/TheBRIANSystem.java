@@ -5,6 +5,8 @@
  */
 package theb.r.i.a.n.system;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -108,7 +110,7 @@ class Set{
         return games;
     }
     
-    public void setGames(ArrayList games){
+    public void setGames(List<Game> games){
         this.games = games;
     }
  
@@ -245,6 +247,10 @@ class Player{
     
     public void setLastName(String name){
         lastName = name;
+    }
+    
+    public String getFullName(){
+        return firstName + " " + lastName;
     }
 }
 
@@ -396,12 +402,120 @@ class Statistics implements Runnable {
 }
     
 }
+
+
 public class TheBRIANSystem extends Application {
+    
+    public List<Match> matchesArray = new ArrayList<Match>();
+    public List<Team> teamsArray = new ArrayList<Team>();
+    
+    public void initialSetup(){
+        File matches = new File("matches.txt");
+        File teams = new File("teams.txt");
+        try{
+            Scanner teamScanner = new Scanner(teams);
+            while(teamScanner.hasNextLine()){
+                Team team = new Team(teamScanner.next());
+                String players = teamScanner.next();
+                String[] playersArray = players.split(",");
+                for(int i = 0;i < playersArray.length;i++){
+                    Player player = new Player(playersArray[i], playersArray[i+1]);
+                    i++;
+                    team.addPlayer(player);
+                }   
+                team.matchesPlayed = Integer.parseInt(teamScanner.next());
+                team.matchesWon = Integer.parseInt(teamScanner.next());
+                team.setsWon = Integer.parseInt(teamScanner.next());
+                teamsArray.add(team);
+            }
+        }
+        catch (FileNotFoundException e){
+            System.out.println("File not found");
+        }
+        
+        try{
+            Scanner matchScanner = new Scanner(matches);
+            while(matchScanner.hasNextLine()){
+                Match match = new Match();
+                String homeTeam = matchScanner.next();
+                for(int i=0;i<teamsArray.size();i++){
+                    if(teamsArray.get(i).name.equals(homeTeam)){
+                        match.setHomeTeam(teamsArray.get(i));
+                    }
+                }
+                String awayTeam = matchScanner.next();
+                for(int i=0;i<teamsArray.size();i++){
+                    if(teamsArray.get(i).name.equals(awayTeam)){
+                        match.setAwayTeam(teamsArray.get(i));
+                    }
+                }
+                
+                String homePlayer1FullName = matchScanner.next();
+                homePlayer1FullName = homePlayer1FullName.replace(",", " ");
+                for(int i = 0;i<match.homeTeam.players.size();i++){
+                    if(match.homeTeam.players.get(i).getFullName() == homePlayer1FullName){
+                        match.setHomePlayer1(match.homeTeam.players.get(i));                    }
+                }
+                
+                String homePlayer2FullName = matchScanner.next();
+                homePlayer2FullName = homePlayer2FullName.replace(",", " ");
+                for(int i = 0;i<match.homeTeam.players.size();i++){
+                    if(match.homeTeam.players.get(i).getFullName() == homePlayer2FullName){
+                        match.setHomePlayer2(match.homeTeam.players.get(i));                    }
+                }
+                
+                String awayPlayer1FullName = matchScanner.next();
+                awayPlayer1FullName = awayPlayer1FullName.replace(",", " ");
+                for(int i = 0;i<match.awayTeam.players.size();i++){
+                    if(match.awayTeam.players.get(i).getFullName() == awayPlayer1FullName){
+                        match.setAwayPlayer1(match.awayTeam.players.get(i));                    }
+                }
+                
+                String awayPlayer2FullName = matchScanner.next();
+                awayPlayer2FullName = awayPlayer2FullName.replace(",", " ");
+                for(int i = 0;i<match.awayTeam.players.size();i++){
+                    if(match.awayTeam.players.get(i).getFullName() == awayPlayer2FullName){
+                        match.setAwayPlayer2(match.awayTeam.players.get(i));                    }
+                }
+                List<Set> sets = new ArrayList<Set>();
+                for(int i = 0;i<5;i++){
+                    Set set = new Set();
+                    set.homeTeam = match.homeTeam;
+                    set.awayTeam = match.awayTeam;
+                    String scores[] = matchScanner.next().split(",");
+                    List<Game> games = new ArrayList<Game>();
+                    for(int c = 0; c < 6;c++){
+                       Game game = new Game();
+                       game.setHomeScore(Integer.parseInt(scores[c]));
+                       game.setAwayScore(Integer.parseInt(scores[c + 1]));
+                       games.add(game);
+                       c++;
+                    }
+                    set.setGames(games);
+                    sets.add(set);
+                }
+                for(int i = 0;i<sets.size();i++){
+                    sets.get(i).calculateWinner();
+                }
+                match.setSets(sets);
+                matchesArray.add(match);
+                for(int i = 0; i<matchesArray.size();i++){
+                    matchesArray.get(i).calculateWinner();
+                }
+                
+            }
+        }
+        catch (FileNotFoundException e){
+            System.out.println("File not found");
+        }
+    }
+    
     static public boolean auth = false;
     
     @Override
     public void start(Stage primaryStage){
-        
+       
+        initialSetup();
         //create the main tab pane that will be the basis of the whole UI
         TabPane tabs = new TabPane();
         
@@ -825,7 +939,7 @@ public class TheBRIANSystem extends Application {
         newSheet.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                System.out.println("--CREATING A NEW WORKSHEET--");
+                System.out.println("--CREATING A NEW SCORESHEET--");
             }
         });
         modifySheet.setOnAction(new EventHandler<ActionEvent>() {
