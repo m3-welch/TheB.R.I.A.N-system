@@ -42,6 +42,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.SingleSelectionModel;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 
 /**
@@ -146,7 +147,10 @@ class Match{
     Player awayPlayer1;
     Player awayPlayer2;
     List<Set> sets = new ArrayList<Set>();
+    int homeScore;
+    int awayScore;
     Team winner;
+    String fileName;
     
     public Team getHomeTeam(){
         return homeTeam;
@@ -212,15 +216,33 @@ class Match{
             }
         }
         if(home >= 3){
+            homeScore = home;
             winner = homeTeam;
         }
         else{
+            awayScore = 5 - home;
             winner = awayTeam;
         }
     }
     
     public Team getWinner(){
         return winner;
+    }
+    
+    public String getFileName(){
+        return fileName;
+    }
+    
+    public void setFileName(String fileName){
+        this.fileName = fileName;
+    }
+    
+    public int getHomeScore(){
+        return homeScore;
+    }
+    
+    public int getAwayScore(){
+        return awayScore;
     }
 }
 
@@ -410,103 +432,126 @@ public class TheBRIANSystem extends Application {
     public List<Team> teamsArray = new ArrayList<Team>();
     
     public void initialSetup(){
-        File matches = new File("matches.txt");
-        File teams = new File("teams.txt");
-        try{
-            Scanner teamScanner = new Scanner(teams);
-            while(teamScanner.hasNextLine()){
-                Team team = new Team(teamScanner.next());
-                String players = teamScanner.next();
-                String[] playersArray = players.split(",");
-                for(int i = 0;i < playersArray.length;i++){
-                    Player player = new Player(playersArray[i], playersArray[i+1]);
-                    i++;
-                    team.addPlayer(player);
-                }   
-                team.matchesPlayed = Integer.parseInt(teamScanner.next());
-                team.matchesWon = Integer.parseInt(teamScanner.next());
-                team.setsWon = Integer.parseInt(teamScanner.next());
-                teamsArray.add(team);
+        File matchesPath = new File("./matches");
+        File [] matchFiles = matchesPath.listFiles();
+        for(int i = 0; i<matchFiles.length; i++){
+            if(!matchFiles[i].isFile()){
+                matchFiles[i].delete();
             }
         }
-        catch (FileNotFoundException e){
-            System.out.println("File not found");
+        
+        File teamsPath = new File("./teams");
+        File [] teamFiles = teamsPath.listFiles();
+        for(int i = 0;i<teamFiles.length;i++){
+            if(!teamFiles[i].isFile()){
+                teamFiles[i].delete();
+            }
         }
         
         try{
-            Scanner matchScanner = new Scanner(matches);
-            while(matchScanner.hasNextLine()){
-                Match match = new Match();
-                String homeTeam = matchScanner.next();
-                for(int i=0;i<teamsArray.size();i++){
-                    if(teamsArray.get(i).name.equals(homeTeam)){
-                        match.setHomeTeam(teamsArray.get(i));
-                    }
+            for(int f = 0;f<teamFiles.length;f++){
+                Scanner teamScanner = new Scanner(teamFiles[f]);
+                while(teamScanner.hasNextLine()){
+                    Team team = new Team(teamScanner.next());
+                    String players = teamScanner.next();
+                    String[] playersArray = players.split(",");
+                    for(int i = 0;i < playersArray.length;i++){
+                        Player player = new Player(playersArray[i], playersArray[i+1]);
+                        i++;
+                        team.addPlayer(player);
+                    }   
+                    team.matchesPlayed = Integer.parseInt(teamScanner.next());
+                    team.matchesWon = Integer.parseInt(teamScanner.next());
+                    team.setsWon = Integer.parseInt(teamScanner.next());
+                    teamsArray.add(team);
                 }
-                String awayTeam = matchScanner.next();
-                for(int i=0;i<teamsArray.size();i++){
-                    if(teamsArray.get(i).name.equals(awayTeam)){
-                        match.setAwayTeam(teamsArray.get(i));
-                    }
-                }
-                
-                String homePlayer1FullName = matchScanner.next();
-                homePlayer1FullName = homePlayer1FullName.replace(",", " ");
-                for(int i = 0;i<match.homeTeam.players.size();i++){
-                    if(match.homeTeam.players.get(i).getFullName() == homePlayer1FullName){
-                        match.setHomePlayer1(match.homeTeam.players.get(i));                    }
-                }
-                
-                String homePlayer2FullName = matchScanner.next();
-                homePlayer2FullName = homePlayer2FullName.replace(",", " ");
-                for(int i = 0;i<match.homeTeam.players.size();i++){
-                    if(match.homeTeam.players.get(i).getFullName() == homePlayer2FullName){
-                        match.setHomePlayer2(match.homeTeam.players.get(i));                    }
-                }
-                
-                String awayPlayer1FullName = matchScanner.next();
-                awayPlayer1FullName = awayPlayer1FullName.replace(",", " ");
-                for(int i = 0;i<match.awayTeam.players.size();i++){
-                    if(match.awayTeam.players.get(i).getFullName() == awayPlayer1FullName){
-                        match.setAwayPlayer1(match.awayTeam.players.get(i));                    }
-                }
-                
-                String awayPlayer2FullName = matchScanner.next();
-                awayPlayer2FullName = awayPlayer2FullName.replace(",", " ");
-                for(int i = 0;i<match.awayTeam.players.size();i++){
-                    if(match.awayTeam.players.get(i).getFullName() == awayPlayer2FullName){
-                        match.setAwayPlayer2(match.awayTeam.players.get(i));                    }
-                }
-                List<Set> sets = new ArrayList<Set>();
-                for(int i = 0;i<5;i++){
-                    Set set = new Set();
-                    set.homeTeam = match.homeTeam;
-                    set.awayTeam = match.awayTeam;
-                    String scores[] = matchScanner.next().split(",");
-                    List<Game> games = new ArrayList<Game>();
-                    for(int c = 0; c < 6;c++){
-                       Game game = new Game();
-                       game.setHomeScore(Integer.parseInt(scores[c]));
-                       game.setAwayScore(Integer.parseInt(scores[c + 1]));
-                       games.add(game);
-                       c++;
-                    }
-                    set.setGames(games);
-                    sets.add(set);
-                }
-                for(int i = 0;i<sets.size();i++){
-                    sets.get(i).calculateWinner();
-                }
-                match.setSets(sets);
-                matchesArray.add(match);
-                for(int i = 0; i<matchesArray.size();i++){
-                    matchesArray.get(i).calculateWinner();
-                }
-                
+                System.out.println("Loaded initial team data");
             }
         }
         catch (FileNotFoundException e){
-            System.out.println("File not found");
+            System.out.println("Team file not found");
+        }
+        
+        try{
+            for(int f = 0; f<matchFiles.length;f++){
+                Scanner matchScanner = new Scanner(matchFiles[f]);
+                while(matchScanner.hasNextLine()){
+                    Match match = new Match();
+                    match.setFileName(matchFiles[f].getName());
+                    System.out.println(match.getFileName());
+                    
+                    String homeTeam = matchScanner.next();
+                    for(int i=0;i<teamsArray.size();i++){
+                        if(teamsArray.get(i).name.equals(homeTeam)){
+                            match.setHomeTeam(teamsArray.get(i));
+                        }
+                    }
+                    String awayTeam = matchScanner.next();
+                    for(int i=0;i<teamsArray.size();i++){
+                        if(teamsArray.get(i).name.equals(awayTeam)){
+                            match.setAwayTeam(teamsArray.get(i));
+                        }
+                    }
+
+                    String homePlayer1FullName = matchScanner.next();
+                    homePlayer1FullName = homePlayer1FullName.replace(",", " ");
+                    for(int i = 0;i<match.homeTeam.players.size();i++){
+                        if(match.homeTeam.players.get(i).getFullName().equals(homePlayer1FullName)){
+                            match.setHomePlayer1(match.homeTeam.players.get(i));                    }
+                    }
+
+                    String homePlayer2FullName = matchScanner.next();
+                    homePlayer2FullName = homePlayer2FullName.replace(",", " ");
+                    for(int i = 0;i<match.homeTeam.players.size();i++){
+                        if(match.homeTeam.players.get(i).getFullName().equals(homePlayer2FullName)){
+                            match.setHomePlayer2(match.homeTeam.players.get(i));                    }
+                    }
+
+                    String awayPlayer1FullName = matchScanner.next();
+                    awayPlayer1FullName = awayPlayer1FullName.replace(",", " ");
+                    for(int i = 0;i<match.awayTeam.players.size();i++){
+                        if(match.awayTeam.players.get(i).getFullName().equals(awayPlayer1FullName)){
+                            match.setAwayPlayer1(match.awayTeam.players.get(i));                    }
+                    }
+
+                    String awayPlayer2FullName = matchScanner.next();
+                    awayPlayer2FullName = awayPlayer2FullName.replace(",", " ");
+                    for(int i = 0;i<match.awayTeam.players.size();i++){
+                        if(match.awayTeam.players.get(i).getFullName().equals(awayPlayer2FullName)){
+                            match.setAwayPlayer2(match.awayTeam.players.get(i));                    }
+                    }
+                    List<Set> sets = new ArrayList<Set>();
+                    for(int i = 0;i<5;i++){
+                        Set set = new Set();
+                        set.homeTeam = match.homeTeam;
+                        set.awayTeam = match.awayTeam;
+                        String scores[] = matchScanner.next().split(",");
+                        List<Game> games = new ArrayList<Game>();
+                        for(int c = 0; c < 6;c++){
+                           Game game = new Game();
+                           game.setHomeScore(Integer.parseInt(scores[c]));
+                           game.setAwayScore(Integer.parseInt(scores[c + 1]));
+                           games.add(game);
+                           c++;
+                        }
+                        set.setGames(games);
+                        sets.add(set);
+                    }
+                    for(int i = 0;i<sets.size();i++){
+                        sets.get(i).calculateWinner();
+                    }
+                    match.setSets(sets);
+                    matchesArray.add(match);
+                    for(int i = 0; i<matchesArray.size();i++){
+                        matchesArray.get(i).calculateWinner();
+                    }
+
+                }
+                System.out.println("Loaded initial scoresheets");
+            }
+        }
+        catch (FileNotFoundException e){
+            System.out.println("Match files not found");
         }
     }
     
@@ -942,10 +987,48 @@ public class TheBRIANSystem extends Application {
                 System.out.println("--CREATING A NEW SCORESHEET--");
             }
         });
+        
         modifySheet.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                System.out.println("--SELECTING A WORKSHEET TO MODIFY--");
+                System.out.println("--SELECTING A SCORESHEET TO MODIFY--");
+                FileChooser fileChooser = new FileChooser();
+                File startFolder = new File("./matches");
+                fileChooser.setInitialDirectory(startFolder);
+                File selectedFile = fileChooser.showOpenDialog(null);
+                for(int i = 0;i<matchesArray.size();i++){
+                    if(matchesArray.get(i).getFileName().equals(selectedFile.getName())){
+                        homeTeam.setValue(matchesArray.get(i).getHomeTeam().getName());
+                        awayTeam.setValue(matchesArray.get(i).getAwayTeam().getName());
+                        homePlayer1.setValue(matchesArray.get(i).getHomePlayer1().getFirstName());
+                        homePlayer2.setValue(matchesArray.get(i).getHomePlayer2().getFirstName());
+                        awayPlayer1.setValue(matchesArray.get(i).getAwayPlayer1().getFirstName());
+                        awayPlayer2.setValue(matchesArray.get(i).getAwayPlayer2().getFirstName());
+                        
+                        set11.setText(Integer.toString(matchesArray.get(i).sets.get(0).games.get(0).getHomeScore()) + ":" + Integer.toString(matchesArray.get(i).sets.get(0).games.get(0).getAwayScore()));
+                        set12.setText(Integer.toString(matchesArray.get(i).sets.get(0).games.get(1).getHomeScore()) + ":" + Integer.toString(matchesArray.get(i).sets.get(0).games.get(1).getAwayScore()));
+                        set13.setText(Integer.toString(matchesArray.get(i).sets.get(0).games.get(2).getHomeScore()) + ":" + Integer.toString(matchesArray.get(i).sets.get(0).games.get(2).getAwayScore()));
+                        
+                        set21.setText(Integer.toString(matchesArray.get(i).sets.get(1).games.get(0).getHomeScore()) + ":" + Integer.toString(matchesArray.get(i).sets.get(1).games.get(0).getAwayScore()));
+                        set22.setText(Integer.toString(matchesArray.get(i).sets.get(1).games.get(1).getHomeScore()) + ":" + Integer.toString(matchesArray.get(i).sets.get(1).games.get(1).getAwayScore()));
+                        set23.setText(Integer.toString(matchesArray.get(i).sets.get(1).games.get(2).getHomeScore()) + ":" + Integer.toString(matchesArray.get(i).sets.get(1).games.get(2).getAwayScore()));
+                        
+                        set31.setText(Integer.toString(matchesArray.get(i).sets.get(2).games.get(0).getHomeScore()) + ":" + Integer.toString(matchesArray.get(i).sets.get(2).games.get(0).getAwayScore()));
+                        set32.setText(Integer.toString(matchesArray.get(i).sets.get(2).games.get(1).getHomeScore()) + ":" + Integer.toString(matchesArray.get(i).sets.get(2).games.get(1).getAwayScore()));
+                        set33.setText(Integer.toString(matchesArray.get(i).sets.get(2).games.get(2).getHomeScore()) + ":" + Integer.toString(matchesArray.get(i).sets.get(2).games.get(2).getAwayScore()));
+                        
+                        set41.setText(Integer.toString(matchesArray.get(i).sets.get(3).games.get(0).getHomeScore()) + ":" + Integer.toString(matchesArray.get(i).sets.get(3).games.get(0).getAwayScore()));
+                        set42.setText(Integer.toString(matchesArray.get(i).sets.get(3).games.get(1).getHomeScore()) + ":" + Integer.toString(matchesArray.get(i).sets.get(3).games.get(1).getAwayScore()));
+                        set43.setText(Integer.toString(matchesArray.get(i).sets.get(3).games.get(2).getHomeScore()) + ":" + Integer.toString(matchesArray.get(i).sets.get(3).games.get(2).getAwayScore()));
+                        
+                        setd1.setText(Integer.toString(matchesArray.get(i).sets.get(4).games.get(0).getHomeScore()) + ":" + Integer.toString(matchesArray.get(i).sets.get(4).games.get(0).getAwayScore()));
+                        setd2.setText(Integer.toString(matchesArray.get(i).sets.get(4).games.get(1).getHomeScore()) + ":" + Integer.toString(matchesArray.get(i).sets.get(4).games.get(1).getAwayScore()));
+                        setd3.setText(Integer.toString(matchesArray.get(i).sets.get(4).games.get(2).getHomeScore()) + ":" + Integer.toString(matchesArray.get(i).sets.get(4).games.get(2).getAwayScore()));
+                   
+                        matchesArray.get(i).calculateWinner();
+                        finalTeamScores.setText(Integer.toString(matchesArray.get(i).getHomeScore()) + ":" + Integer.toString(matchesArray.get(i).getAwayScore()));
+                    }
+                }
             }
         });
         calculate.setOnAction(new EventHandler<ActionEvent>() {
