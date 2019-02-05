@@ -416,10 +416,13 @@ public class TheBRIANSystem extends Application {
 
             @Override
             public void changed(ObservableValue<? extends Tab> observable, Tab oldTab, Tab newTab) {
-                if(newTab == adminPage) {
+                if(newTab == adminPage && !auth) {
                     Login.display();
                 }
-                if(!auth){
+                if(!auth && (newTab == scoresheets || newTab == viewerPage)){
+                    selectionModel.select(newTab);
+                }
+                if(!auth && newTab == adminPage){
                     selectionModel.select(viewerPage);
                 }
             }
