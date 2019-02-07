@@ -217,10 +217,12 @@ class Match{
         }
         if(home >= 3){
             homeScore = home;
+            awayScore = 5 - home;
             winner = homeTeam;
         }
         else{
             awayScore = 5 - home;
+            homeScore = home;
             winner = awayTeam;
         }
     }
