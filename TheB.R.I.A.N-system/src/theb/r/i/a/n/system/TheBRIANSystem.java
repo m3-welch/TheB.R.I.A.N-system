@@ -5,6 +5,8 @@
  */
 package theb.r.i.a.n.system;
 
+
+//import all the necessary modules
 import java.io.File;
 import java.io.FileNotFoundException;
 import javafx.application.Application;
@@ -16,15 +18,12 @@ import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -35,7 +34,6 @@ import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import java.util.*;
-import java.lang.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Alert;
@@ -45,11 +43,9 @@ import javafx.scene.control.SingleSelectionModel;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 
-/**
- *
- * @author morga
- */
 
+// Create a class to represent the game data struture. Has the appropriate get 
+// and set methods
 class Game{
     int homeScore;
     int awayScore;
@@ -85,6 +81,9 @@ class Game{
     
 }
 
+
+// Create a class to represent the set data structure. Has the appropriate get
+// and set methods
 class Set{
     Team homeTeam;
     Team awayTeam;
@@ -115,6 +114,8 @@ class Set{
         this.games = games;
     }
  
+    // Calculate the winner by finding out how many games the home team won, and
+    // performing calculations on that number.
     public void calculateWinner(){
         int home = 0;
         for(int i = 0; i < 3; i++){
@@ -139,7 +140,11 @@ class Set{
     }
 }
 
+
+// Create a class to represent the match data structure. Has the appropriate get
+// and set methods.
 class Match{
+    int matchID;
     Team homeTeam;
     Team awayTeam;
     Player homePlayer1;
@@ -208,6 +213,8 @@ class Match{
         this.sets = sets;
     }
     
+    // Calculate winner by working out how many sets the home team has one and
+    // performing the calculations on that number
     public void calculateWinner(){
         int home = 0;
         for(int i = 0; i < 5; i++){
@@ -246,8 +253,19 @@ class Match{
     public int getAwayScore(){
         return awayScore;
     }
+    
+    public int getMatchID(){
+        return matchID;
+    }
+    
+    public void setMatchID(int matchID){
+        this.matchID = matchID;
+    }
 }
 
+
+// Create a class to represent the player data structure. Has the appropriate 
+// get and set methods.
 class Player{
     String firstName;
     String lastName;
@@ -278,6 +296,8 @@ class Player{
     }
 }
 
+// Create a class to represent the team data structure. Has the appropriate get
+// and set methods.
 class Team{
     String name;
     List<Player> players = new ArrayList<Player>();
@@ -351,13 +371,18 @@ class Team{
     
 }
 
+// Create a class that can handle the login for the admin page.
 class Login{
     static private void submitAndClose(Stage window, String password){
+        // If the password is correct, set the authorisation to true and close
+        // the login window
         if(password.equals("admin")){
             TheBRIANSystem.auth = true;
             window.close();
         }
         else{
+            // If the password is not correct, alert the user the password is 
+            // wrong and allow them to re-enter the password
             Alert alert = new Alert(AlertType.WARNING);
             alert.setTitle("INCORRECT PASSWORD!");
             alert.setHeaderText("Re-enter the password to try again");
@@ -365,75 +390,88 @@ class Login{
         }
     }
     
+    // Display the login popup window
     public static void display(){
-    Stage popupwindow = new Stage();
-    popupwindow.initModality(Modality.APPLICATION_MODAL);
-    popupwindow.setTitle("Admin Login");
-    
-    Label enter_password = new Label("Enter the admin password: ");
-    PasswordField password = new PasswordField();
-    Button submit = new Button("Submit");
-    submit.setOnAction(e-> submitAndClose(popupwindow, password.getText()));
-    
-    GridPane login = new GridPane();
-    login.setVgap(4);
-    login.setHgap(4);
-    login.setPadding(new Insets(5, 5, 5, 5));
-    
-    login.add(enter_password, 0, 0);
-    login.add(password, 0, 1);
-    login.add(submit, 1, 1);
-    
-    Scene loginscene = new Scene(login, 300, 200);
-    popupwindow.setScene(loginscene);
-    popupwindow.showAndWait();
+        // Set the properties for the popup login window
+        Stage popupwindow = new Stage();
+        popupwindow.initModality(Modality.APPLICATION_MODAL);
+        popupwindow.setTitle("Admin Login");
+
+        // Create the label, password field and button nodes
+        Label enter_password = new Label("Enter the admin password: ");
+        PasswordField password = new PasswordField();
+        Button submit = new Button("Submit");
+        submit.setOnAction(e-> submitAndClose(popupwindow, password.getText()));
+
+        // Create the grid pane for the login window and set its properties
+        GridPane login = new GridPane();
+        login.setVgap(4);
+        login.setHgap(4);
+        login.setPadding(new Insets(5, 5, 5, 5));
+
+        // Add the nodes to the login popup window
+        login.add(enter_password, 0, 0);
+        login.add(password, 0, 1);
+        login.add(submit, 1, 1);
+
+        // Set the scene and display the popup window
+        Scene loginscene = new Scene(login, 300, 200);
+        popupwindow.setScene(loginscene);
+        popupwindow.showAndWait();
     }
 }
 
+// Create a class to be a second thread in the program that will update the 
+// statistics every 100 seconds
 class Statistics implements Runnable {
-    
+    // Create a function to update the statistics
     static public void updateStats(){
         System.out.println("UPDATE STATS");
     }
     
     @Override
     public void run(){
-    long start = (System.currentTimeMillis() / 1000);
-    long current = start;
-    long elapsed = current;
-    boolean reset = false;
-    long elapsed_temp = 0;
-    
-    while(true){
-        current = (System.currentTimeMillis() / 1000);
-        elapsed = current - start;
+        // Set the start time as the current time
+        long start = (System.currentTimeMillis() / 1000);
+        long current = start;
+        long elapsed = current;
+        boolean reset = false;
 
-        if (reset){
-            start = (System.currentTimeMillis() / 1000);
-            reset = false;
+        //while the thread is running, do this loop
+        while(true){
+            // Set the current time to the current time
+            current = (System.currentTimeMillis() / 1000);
+            // Set the elapsed time as the current time minus the start time
+            elapsed = current - start;
+            
+            // If the reset flag is true (e.g. after 100 seconds have elapsed)
+            if (reset){
+                //set the start time to the current time and set the reset flag
+                // to false
+                start = (System.currentTimeMillis() / 1000);
+                reset = false;
+            }
+            // If 100 seconds have elapsed
+            if(elapsed == 100){
+                // Update the statistics and set the reset flag to true
+                updateStats();
+                reset = true;
+            }
         }
-        if(elapsed == 100){
-            updateStats();
-            reset = true;
-        }
-        
-        if(elapsed != elapsed_temp){
-            System.out.println(elapsed);
-        }
-        
-        elapsed_temp = elapsed;
     }
-}
     
 }
 
-
+// Create the main application class
 public class TheBRIANSystem extends Application {
     
+    // Create the arrays that will hold the teams and matches
     public List<Match> matchesArray = new ArrayList<Match>();
     public List<Team> teamsArray = new ArrayList<Team>();
     
+    // Create a function that will handle the initialisation of files
     public void initialSetup(){
+        // Create the array of the list of files in the matches folder
         File matchesPath = new File("./matches");
         File [] matchFiles = matchesPath.listFiles();
         for(int i = 0; i<matchFiles.length; i++){
@@ -442,6 +480,7 @@ public class TheBRIANSystem extends Application {
             }
         }
         
+        // Create the array of the list of files in the teams folder
         File teamsPath = new File("./teams");
         File [] teamFiles = teamsPath.listFiles();
         for(int i = 0;i<teamFiles.length;i++){
@@ -451,10 +490,16 @@ public class TheBRIANSystem extends Application {
         }
         
         try{
+            // For each team in the teams folder
             for(int f = 0;f<teamFiles.length;f++){
+                // Create a new scanner for the file
                 Scanner teamScanner = new Scanner(teamFiles[f]);
+                // While the file has more information, do this
                 while(teamScanner.hasNextLine()){
+                    // Create a new team with the name of the team
                     Team team = new Team(teamScanner.next());
+                    // Make an array of players from the list of players in the
+                    // file
                     String players = teamScanner.next();
                     String[] playersArray = players.split(",");
                     for(int i = 0;i < playersArray.length;i++){
@@ -462,9 +507,12 @@ public class TheBRIANSystem extends Application {
                         i++;
                         team.addPlayer(player);
                     }   
+                    
+                    // Set the team's matches played, matches won and sets won
                     team.matchesPlayed = Integer.parseInt(teamScanner.next());
                     team.matchesWon = Integer.parseInt(teamScanner.next());
                     team.setsWon = Integer.parseInt(teamScanner.next());
+                    // Add the team to the team array
                     teamsArray.add(team);
                 }
                 System.out.println("Loaded initial team data");
@@ -475,19 +523,26 @@ public class TheBRIANSystem extends Application {
         }
         
         try{
+            // For each match in the matches folder
             for(int f = 0; f<matchFiles.length;f++){
+                // Create a new scanner for that file
                 Scanner matchScanner = new Scanner(matchFiles[f]);
+                // While the file has another line, do this
                 while(matchScanner.hasNextLine()){
+                    // Create a new match
                     Match match = new Match();
+                    // Set the filename of the match to the filename
                     match.setFileName(matchFiles[f].getName());
-                    System.out.println(match.getFileName());
                     
+                    // Set the match's home team
                     String homeTeam = matchScanner.next();
                     for(int i=0;i<teamsArray.size();i++){
                         if(teamsArray.get(i).name.equals(homeTeam)){
                             match.setHomeTeam(teamsArray.get(i));
                         }
                     }
+                    
+                    // Set the match's away team
                     String awayTeam = matchScanner.next();
                     for(int i=0;i<teamsArray.size();i++){
                         if(teamsArray.get(i).name.equals(awayTeam)){
@@ -495,6 +550,7 @@ public class TheBRIANSystem extends Application {
                         }
                     }
 
+                    // Add the homePlayer1 to the match
                     String homePlayer1FullName = matchScanner.next();
                     homePlayer1FullName = homePlayer1FullName.replace(",", " ");
                     for(int i = 0;i<match.homeTeam.players.size();i++){
@@ -502,6 +558,7 @@ public class TheBRIANSystem extends Application {
                             match.setHomePlayer1(match.homeTeam.players.get(i));                    }
                     }
 
+                    // Add the homePlayer2 to the match
                     String homePlayer2FullName = matchScanner.next();
                     homePlayer2FullName = homePlayer2FullName.replace(",", " ");
                     for(int i = 0;i<match.homeTeam.players.size();i++){
@@ -509,6 +566,7 @@ public class TheBRIANSystem extends Application {
                             match.setHomePlayer2(match.homeTeam.players.get(i));                    }
                     }
 
+                    // Add the awayPlayer1 to the match
                     String awayPlayer1FullName = matchScanner.next();
                     awayPlayer1FullName = awayPlayer1FullName.replace(",", " ");
                     for(int i = 0;i<match.awayTeam.players.size();i++){
@@ -516,12 +574,15 @@ public class TheBRIANSystem extends Application {
                             match.setAwayPlayer1(match.awayTeam.players.get(i));                    }
                     }
 
+                    // Add the awayPlayer2 to the match
                     String awayPlayer2FullName = matchScanner.next();
                     awayPlayer2FullName = awayPlayer2FullName.replace(",", " ");
                     for(int i = 0;i<match.awayTeam.players.size();i++){
                         if(match.awayTeam.players.get(i).getFullName().equals(awayPlayer2FullName)){
                             match.setAwayPlayer2(match.awayTeam.players.get(i));                    }
                     }
+                    
+                    // Create the list of sets to add the match
                     List<Set> sets = new ArrayList<Set>();
                     for(int i = 0;i<5;i++){
                         Set set = new Set();
@@ -543,7 +604,11 @@ public class TheBRIANSystem extends Application {
                         sets.get(i).calculateWinner();
                     }
                     match.setSets(sets);
+                    
+                    // Add the match to the matches array
                     matchesArray.add(match);
+                    
+                    // Calculate the winner for each match
                     for(int i = 0; i<matchesArray.size();i++){
                         matchesArray.get(i).calculateWinner();
                     }
@@ -557,11 +622,13 @@ public class TheBRIANSystem extends Application {
         }
     }
     
+    // Set the auth flag to false
     static public boolean auth = false;
     
     @Override
     public void start(Stage primaryStage){
        
+        // Run the initial setup function that loads in data
         initialSetup();
         //create the main tab pane that will be the basis of the whole UI
         TabPane tabs = new TabPane();
@@ -571,24 +638,37 @@ public class TheBRIANSystem extends Application {
         Tab viewerPage = new Tab("Viewer");
         Tab scoresheets = new Tab("Scoresheets");
         
+        // Get the selection model for the tabs
         SingleSelectionModel<Tab> selectionModel = tabs.getSelectionModel();
         
+        // Add a listener for the tab being changed
         tabs.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
 
             @Override
             public void changed(ObservableValue<? extends Tab> observable, Tab oldTab, Tab newTab) {
+                // If the new tab is the admin page and the user is not 
+                // authorised
                 if(newTab == adminPage && !auth) {
+                    // Display the login popup window
                     Login.display();
                 }
+                
+                // If the user is not authorised and the new tab is not the 
+                // admin page
                 if(!auth && (newTab == scoresheets || newTab == viewerPage)){
+                    // Send the user to the new tab
                     selectionModel.select(newTab);
                 }
+                
+                // If the user is not authorised and the page is the admin page
                 if(!auth && newTab == adminPage){
+                    // Send the user to the viewer page
                     selectionModel.select(viewerPage);
                 }
             }
             });
         
+        // Stop the user from being able to manually close any of the tabs
         adminPage.setClosable(false);
         viewerPage.setClosable(false);
         scoresheets.setClosable(false);
@@ -627,6 +707,8 @@ public class TheBRIANSystem extends Application {
         //create the button and textfield for the user inputs
         TextField newTeamName = new TextField("Enter a new team name");
         Button submitTeamName = new Button("Add Team");
+        
+        // Create a listener for the new team button
         submitTeamName.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -677,6 +759,7 @@ public class TheBRIANSystem extends Application {
         ///////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////
         
+        // Create a handler for the add player button click
         addPlayer.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -723,6 +806,8 @@ public class TheBRIANSystem extends Application {
         warning.setText("Warning: All pre-existing match information \n"
                 + "will be removed.");
         Button generateFixturesButton = new Button("Generate Fixtures");
+        
+        // Create a handler for the generate fixtures button
         generateFixturesButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -769,6 +854,8 @@ public class TheBRIANSystem extends Application {
         info.setText("You can also generate it by clicking the button \n"
                 + " on the right.");
         Button generateStatsButton = new Button("Generate Statistics");
+        
+        // Create a handler for the generate statisctics button
         generateStatsButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -829,6 +916,7 @@ public class TheBRIANSystem extends Application {
         teamRanks.setMinWidth(300);
         viewScores.setMinWidth(300);
         
+        // Set the preferences of the nodes
         viewFixtures.setPrefWidth(205);
         Label textArea = new Label();
         textArea.setPrefSize(400, 800);
@@ -837,6 +925,7 @@ public class TheBRIANSystem extends Application {
         textArea.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
         textArea.setAlignment(Pos.TOP_LEFT);
         
+        // Create a handler for the view fixtures button
         viewFixtures.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -844,6 +933,8 @@ public class TheBRIANSystem extends Application {
                 System.out.println("--VIEW FIXTURES AND RESULTS--");
             }
         });
+        
+        // Create a handler for the team stats button
         teamStats.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -851,6 +942,8 @@ public class TheBRIANSystem extends Application {
                 System.out.println("--VIEWING STATISTICS--");
             }
         });
+        
+        // Create a handler for the team ranks button
         teamRanks.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -858,6 +951,8 @@ public class TheBRIANSystem extends Application {
                 System.out.println("--VIEWING RANKINGS--");
             }
         });
+        
+        // Create a handler for the view scores button
         viewScores.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -882,7 +977,7 @@ public class TheBRIANSystem extends Application {
         ///// scoresheets tabs ////////////////
         ///////////////////////////////////////
         
-        //create a grid pane for the scoresheet tab amd sey all the preferences
+        //create grid panes for the scoresheet tab and set all the preferences
         GridPane scoresheet = new GridPane();
         scoresheet.setVgap(4);
         scoresheet.setHgap(4);
@@ -965,24 +1060,10 @@ public class TheBRIANSystem extends Application {
         TextField setd1 = new TextField("0:0");
         TextField setd2 = new TextField("0:0");
         TextField setd3 = new TextField("0:0");
-        set11.setEditable(false);
-        set12.setEditable(false);
-        set13.setEditable(false);
-        set21.setEditable(false);
-        set22.setEditable(false);
-        set23.setEditable(false);
-        set31.setEditable(false);
-        set32.setEditable(false);
-        set33.setEditable(false);
-        set41.setEditable(false);
-        set42.setEditable(false);
-        set43.setEditable(false);
-        setd1.setEditable(false);
-        setd2.setEditable(false);
-        setd3.setEditable(false);
         Button calculate = new Button("Calculate and Submit scores");
         calculate.setMinWidth(500);
         
+        // Create a handler for the new sheet button
         newSheet.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -990,23 +1071,40 @@ public class TheBRIANSystem extends Application {
             }
         });
         
+        // Create a handler for the modify sheet button
         modifySheet.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 System.out.println("--SELECTING A SCORESHEET TO MODIFY--");
+                // Let the user choose a file from the matches folder
                 FileChooser fileChooser = new FileChooser();
                 File startFolder = new File("./matches");
                 fileChooser.setInitialDirectory(startFolder);
                 File selectedFile = fileChooser.showOpenDialog(null);
+                
+                // For each of the items in the matches array
                 for(int i = 0;i<matchesArray.size();i++){
+                    // If the filename matches the filename the user has chosen,
+                    // do this
                     if(matchesArray.get(i).getFileName().equals(selectedFile.getName())){
+                        // Set the home team combo box to the home team name
                         homeTeam.setValue(matchesArray.get(i).getHomeTeam().getName());
+                        // Set the away team combo box to the away team name
                         awayTeam.setValue(matchesArray.get(i).getAwayTeam().getName());
+                        // Set the homePlayer1 combo box to the homePlayer1
+                        // first name
                         homePlayer1.setValue(matchesArray.get(i).getHomePlayer1().getFirstName());
+                        // Set the homePlayer2 combo box to the homePlayer2
+                        // first name
                         homePlayer2.setValue(matchesArray.get(i).getHomePlayer2().getFirstName());
+                        // Set the awayPlayer1 combo box to the awayPlayer1
+                        // first name
                         awayPlayer1.setValue(matchesArray.get(i).getAwayPlayer1().getFirstName());
+                        // Set the awayPlayer2 combo box to the awayPlayer2
+                        // first name
                         awayPlayer2.setValue(matchesArray.get(i).getAwayPlayer2().getFirstName());
                         
+                        // Set all of the text fields to their appropriate scores
                         set11.setText(Integer.toString(matchesArray.get(i).sets.get(0).games.get(0).getHomeScore()) + ":" + Integer.toString(matchesArray.get(i).sets.get(0).games.get(0).getAwayScore()));
                         set12.setText(Integer.toString(matchesArray.get(i).sets.get(0).games.get(1).getHomeScore()) + ":" + Integer.toString(matchesArray.get(i).sets.get(0).games.get(1).getAwayScore()));
                         set13.setText(Integer.toString(matchesArray.get(i).sets.get(0).games.get(2).getHomeScore()) + ":" + Integer.toString(matchesArray.get(i).sets.get(0).games.get(2).getAwayScore()));
@@ -1027,12 +1125,17 @@ public class TheBRIANSystem extends Application {
                         setd2.setText(Integer.toString(matchesArray.get(i).sets.get(4).games.get(1).getHomeScore()) + ":" + Integer.toString(matchesArray.get(i).sets.get(4).games.get(1).getAwayScore()));
                         setd3.setText(Integer.toString(matchesArray.get(i).sets.get(4).games.get(2).getHomeScore()) + ":" + Integer.toString(matchesArray.get(i).sets.get(4).games.get(2).getAwayScore()));
                    
+                        // Calculate the winner of the matches
                         matchesArray.get(i).calculateWinner();
+                        
+                        // Set the final scores text field
                         finalTeamScores.setText(Integer.toString(matchesArray.get(i).getHomeScore()) + ":" + Integer.toString(matchesArray.get(i).getAwayScore()));
                     }
                 }
             }
         });
+        
+        // Create a handler for the calculate and submit button
         calculate.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -1040,6 +1143,7 @@ public class TheBRIANSystem extends Application {
             }
         });
         
+        // Add the nodes
         set1.add(set11, 0, 0);
         set1.add(set12, 0, 1);
         set1.add(set13, 0, 2);
@@ -1107,10 +1211,15 @@ public class TheBRIANSystem extends Application {
 
 
     public static void main(String[] args) {
+        // Create an instance of the statistics class
         Statistics stats = new Statistics();
+        // Create a new thread of the statistics class
         Thread statsThread = new Thread(stats);
+        // Set the thread to close on program shutdown
         statsThread.setDaemon(true);
+        // Start the statistics thread
         statsThread.start();
+        // Launch the program
         launch(args);
     }
     
