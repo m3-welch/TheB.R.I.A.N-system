@@ -1356,77 +1356,119 @@ public class TheBRIANSystem extends Application {
                     int game11AwayScore = Integer.parseInt(scores11[1]);
                     Game newGame11 = new Game();
                     newGame11.setHomeScore(game11HomeScore);
+                    newGame11.setAwayScore(game11AwayScore);
                     
                     String game12 = set12.getText();
                     String[] scores12 = game12.split(":");
                     int game12HomeScore = Integer.parseInt(scores12[0]);
                     int game12AwayScore = Integer.parseInt(scores12[1]);
+                    Game newGame12 = new Game();
+                    newGame12.setHomeScore(game12HomeScore);
+                    newGame12.setAwayScore(game12AwayScore);
                     
                     String game13 = set13.getText();
                     String[] scores13 = game13.split(":");
                     int game13HomeScore = Integer.parseInt(scores13[0]);
                     int game13AwayScore = Integer.parseInt(scores13[1]);
+                    Game newGame13 = new Game();
+                    newGame13.setHomeScore(game13HomeScore);
+                    newGame13.setAwayScore(game13AwayScore);
                     
                     String game21 = set21.getText();
                     String[] scores21 = game21.split(":");
                     int game21HomeScore = Integer.parseInt(scores21[0]);
                     int game21AwayScore = Integer.parseInt(scores21[1]);
+                    Game newGame21 = new Game();
+                    newGame21.setHomeScore(game21HomeScore);
+                    newGame21.setAwayScore(game21AwayScore);
                     
                     String game22 = set22.getText();
                     String[] scores22 = game22.split(":");
                     int game22HomeScore = Integer.parseInt(scores22[0]);
                     int game22AwayScore = Integer.parseInt(scores22[1]);
+                    Game newGame22 = new Game();
+                    newGame22.setHomeScore(game22HomeScore);
+                    newGame22.setAwayScore(game22AwayScore);
                     
                     String game23 = set23.getText();
                     String[] scores23 = game23.split(":");
                     int game23HomeScore = Integer.parseInt(scores23[0]);
                     int game23AwayScore = Integer.parseInt(scores23[1]);
+                    Game newGame23 = new Game();
+                    newGame23.setHomeScore(game23HomeScore);
+                    newGame23.setAwayScore(game23AwayScore);
                     
                     String game31 = set31.getText();
                     String[] scores31 = game31.split(":");
                     int game31HomeScore = Integer.parseInt(scores31[0]);
                     int game31AwayScore = Integer.parseInt(scores31[1]);
+                    Game newGame31 = new Game();
+                    newGame31.setHomeScore(game31HomeScore);
+                    newGame31.setAwayScore(game31AwayScore);
                     
                     String game32 = set32.getText();
                     String[] scores32 = game32.split(":");
                     int game32HomeScore = Integer.parseInt(scores32[0]);
                     int game32AwayScore = Integer.parseInt(scores32[1]);
+                    Game newGame32 = new Game();
+                    newGame32.setHomeScore(game32HomeScore);
+                    newGame32.setAwayScore(game32AwayScore);
                     
                     String game33 = set33.getText();
                     String[] scores33 = game33.split(":");
                     int game33HomeScore = Integer.parseInt(scores33[0]);
                     int game33AwayScore = Integer.parseInt(scores33[1]);
+                    Game newGame33 = new Game();
+                    newGame33.setHomeScore(game33HomeScore);
+                    newGame33.setAwayScore(game33AwayScore);
                     
                     String game41 = set41.getText();
                     String[] scores41 = game41.split(":");
                     int game41HomeScore = Integer.parseInt(scores41[0]);
                     int game41AwayScore = Integer.parseInt(scores41[1]);
-                   
+                    Game newGame41 = new Game();
+                    newGame41.setHomeScore(game41HomeScore);
+                    newGame41.setAwayScore(game41AwayScore);
+                    
                     String game42 = set42.getText();
                     String[] scores42 = game42.split(":");
                     int game42HomeScore = Integer.parseInt(scores42[0]);
                     int game42AwayScore = Integer.parseInt(scores42[1]);
+                    Game newGame42 = new Game();
+                    newGame42.setHomeScore(game42HomeScore);
+                    newGame42.setAwayScore(game42AwayScore);
                     
                     String game43 = set43.getText();
                     String[] scores43 = game43.split(":");
                     int game43HomeScore = Integer.parseInt(scores43[0]);
                     int game43AwayScore = Integer.parseInt(scores43[1]);
-                   
+                    Game newGame43 = new Game();
+                    newGame43.setHomeScore(game43HomeScore);
+                    newGame43.setAwayScore(game43AwayScore);
+                    
                     String gamed1 = setd1.getText();
                     String[] scoresd1 = gamed1.split(":");
                     int gamed1HomeScore = Integer.parseInt(scoresd1[0]);
                     int gamed1AwayScore = Integer.parseInt(scoresd1[1]);
-                   
+                    Game newGamed1 = new Game();
+                    newGamed1.setHomeScore(gamed1HomeScore);
+                    newGamed1.setAwayScore(gamed1AwayScore);
+                    
                     String gamed2 = setd2.getText();
                     String[] scoresd2 = gamed2.split(":");
                     int gamed2HomeScore = Integer.parseInt(scoresd2[0]);
                     int gamed2AwayScore = Integer.parseInt(scoresd2[1]);
-                   
+                    Game newGamed2 = new Game();
+                    newGamed2.setHomeScore(gamed2HomeScore);
+                    newGamed2.setAwayScore(gamed2AwayScore);
+                    
                     String gamed3 = setd3.getText();
                     String[] scoresd3 = gamed3.split(":");
                     int gamed3HomeScore = Integer.parseInt(scoresd3[0]);
                     int gamed3AwayScore = Integer.parseInt(scoresd3[1]);
-                           
+                    Game newGamed3 = new Game();
+                    newGamed3.setHomeScore(gamed3HomeScore);
+                    newGamed3.setAwayScore(gamed3AwayScore);
                 }
             }
         });
