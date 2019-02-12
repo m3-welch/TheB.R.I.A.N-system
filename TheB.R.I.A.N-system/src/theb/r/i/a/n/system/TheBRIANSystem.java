@@ -1085,18 +1085,65 @@ public class TheBRIANSystem extends Application {
         Label homeTeamLabel = new Label("Home Team");
         Label awayTeamLabel = new Label("Away Team");
         ComboBox homeTeam = new ComboBox();
+        
+        comboTeamNames = new String[teamsArray.size()];
+        for (int i = 0; i < teamsArray.size(); i++){
+            comboTeamNames[i] = teamsArray.get(i).getName();
+        }
+        homeTeam.getItems().addAll(comboTeamNames);
+        
         homeTeam.setMinWidth(150);
+        
         ComboBox awayTeam = new ComboBox();
+        
+        comboTeamNames = new String[teamsArray.size()];
+        for (int i = 0; i < teamsArray.size(); i++){
+            comboTeamNames[i] = teamsArray.get(i).getName();
+        }
+        awayTeam.getItems().addAll(comboTeamNames);
+        
         awayTeam.setMinWidth(150);
         Label singleSets = new Label("Single Sets");
         Label doubleSetLabel = new Label("Double Set");
+        
         ComboBox awayPlayer1 = new ComboBox();
+        
+        comboTeamNames = new String[teamsArray.size()];
+        for (int i = 0; i < teamsArray.size(); i++){
+            comboTeamNames[i] = teamsArray.get(i).getName();
+        }
+        awayPlayer1.getItems().addAll(comboTeamNames);
+        
         awayPlayer1.setMinWidth(150);
+        
         ComboBox awayPlayer2 = new ComboBox();
+        
+        comboTeamNames = new String[teamsArray.size()];
+        for (int i = 0; i < teamsArray.size(); i++){
+            comboTeamNames[i] = teamsArray.get(i).getName();
+        }
+        awayPlayer2.getItems().addAll(comboTeamNames);
+        
         awayPlayer2.setMinWidth(150);
+        
         ComboBox homePlayer1 = new ComboBox();
+        
+        comboTeamNames = new String[teamsArray.size()];
+        for (int i = 0; i < teamsArray.size(); i++){
+            comboTeamNames[i] = teamsArray.get(i).getName();
+        }
+        homePlayer1.getItems().addAll(comboTeamNames);
+        
         homePlayer1.setMinWidth(100);
+        
         ComboBox homePlayer2 = new ComboBox();
+        
+        comboTeamNames = new String[teamsArray.size()];
+        for (int i = 0; i < teamsArray.size(); i++){
+            comboTeamNames[i] = teamsArray.get(i).getName();
+        }
+        homePlayer2.getItems().addAll(comboTeamNames);
+        
         homePlayer2.setMinWidth(100);
         TextField finalTeamScores = new TextField("Final Team Scores");
         finalTeamScores.setEditable(false);
@@ -1469,6 +1516,48 @@ public class TheBRIANSystem extends Application {
                     Game newGamed3 = new Game();
                     newGamed3.setHomeScore(gamed3HomeScore);
                     newGamed3.setAwayScore(gamed3AwayScore);
+                    
+                    Set set1 = new Set();
+                    List<Game> games1 = new ArrayList<Game>();
+                    games1.add(newGame11);
+                    games1.add(newGame12);
+                    games1.add(newGame13);
+                    set1.setGames(games1);
+                    sets.add(set1);
+                    
+                    Set set2 = new Set();
+                    List<Game> games2 = new ArrayList<Game>();
+                    games2.add(newGame21);
+                    games2.add(newGame22);
+                    games2.add(newGame23);
+                    set2.setGames(games2);
+                    sets.add(set2);
+                    
+                    Set set3 = new Set();
+                    List<Game> games3 = new ArrayList<Game>();
+                    games3.add(newGame31);
+                    games3.add(newGame32);
+                    games3.add(newGame33);
+                    set3.setGames(games3);
+                    sets.add(set3);
+                    
+                    Set set4 = new Set();
+                    List<Game> games4 = new ArrayList<Game>();
+                    games4.add(newGame41);
+                    games4.add(newGame42);
+                    games4.add(newGame43);
+                    set4.setGames(games4);
+                    sets.add(set4);
+                    
+                    Set setd = new Set();
+                    List<Game> gamesd = new ArrayList<Game>();
+                    gamesd.add(newGamed1);
+                    gamesd.add(newGamed2);
+                    gamesd.add(newGamed3);
+                    setd.setGames(gamesd);
+                    sets.add(setd);
+                    
+                    match.setSets(sets);
                 }
             }
         });
