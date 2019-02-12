@@ -42,6 +42,8 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
+import java.io.FileWriter;
+import java.io.IOException;
 
 
 // Create a class to represent the game data struture. Has the appropriate get 
@@ -368,7 +370,6 @@ class Team{
     public void removePlayer(Player player){
         players.remove(player);
     }
-    
 }
 
 // Create a class that can handle the login for the admin page.
@@ -713,7 +714,9 @@ public class TheBRIANSystem extends Application {
             @Override
             public void handle(ActionEvent event) {
                 String teamName = newTeamName.getText();
-                System.out.println(teamName + " has been added");
+                Team addTeam = new Team (teamName);
+                teamsArray.add(addTeam);
+                System.out.println(addTeam.getName() + " has been added");
             }
         });
         
@@ -744,27 +747,33 @@ public class TheBRIANSystem extends Application {
         newPlayerGrid.setVgap(4);
         newPlayerGrid.setHgap(4);
         newPlayerGrid.setPadding(new Insets(5, 5, 5, 5));
-        newPlayer.setText("Enter a new player");
+        newPlayer.setText("Enter a new player, e.g. John Smith");
         
         //create a textfield, a dropdown for teams and a button for the new 
         //player
         TextField playerName = new TextField("John");
         Button addPlayer = new Button("Add Player");        
         ComboBox teamList = new ComboBox();
-        ///////////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////
-        //////                 -TODO-                    //////
-        ////// This needs to add team names using a loop //////
-        //////                 -TODO-                    //////
-        ///////////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////
+        String[] comboTeamNames = new String[teamsArray.size()];
+        for (int i = 0; i < teamsArray.size(); i++){
+            comboTeamNames[i] = teamsArray.get(i).getName();
+        }
+        teamList.getItems().addAll(comboTeamNames);
         
         // Create a handler for the add player button click
         addPlayer.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                String newPlayerName = playerName.getText();
-                System.out.println(newPlayerName + " has been added");
+                String[] newPlayerName = playerName.getText().split(" ");
+                
+                Player player = new Player(newPlayerName[0],newPlayerName[1]);
+                for (int i = 0; i < teamsArray.size(); i++){
+                    if(teamList.getValue() == teamsArray.get(i).getName()){
+                        teamsArray.get(i).addPlayer(player);
+                    }
+                }
+
+                System.out.println(player.firstName + " " + player.lastName + " has been added to " + teamList.getValue());
             }
         });
         
