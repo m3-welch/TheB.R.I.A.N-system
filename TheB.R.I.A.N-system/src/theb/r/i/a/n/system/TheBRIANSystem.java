@@ -7,41 +7,21 @@ package theb.r.i.a.n.system;
 
 
 //import all the necessary modules
+import javafx.scene.*;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
+import javafx.stage.*;
+import javafx.geometry.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.geometry.Side;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.stage.Stage;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
-import javafx.scene.control.TitledPane;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.BorderWidths;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.GridPane;
 import java.util.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.SingleSelectionModel;
-import javafx.stage.FileChooser;
-import javafx.stage.Modality;
 
 
 // Create a class to represent the game data struture. Has the appropriate get 
@@ -75,6 +55,7 @@ class Game{
         winner = team;
     }
     
+    @Override
     public String toString(){
         return homeScore + ":" + awayScore;
     }
@@ -87,7 +68,7 @@ class Game{
 class Set{
     Team homeTeam;
     Team awayTeam;
-    List<Game> games = new ArrayList<Game>();
+    List<Game> games = new ArrayList<>();
     Team winner;
     
     public Team getHomeTeam(){
@@ -151,7 +132,7 @@ class Match{
     Player homePlayer2;
     Player awayPlayer1;
     Player awayPlayer2;
-    List<Set> sets = new ArrayList<Set>();
+    List<Set> sets = new ArrayList<>();
     int homeScore;
     int awayScore;
     Team winner;
@@ -300,7 +281,7 @@ class Player{
 // and set methods.
 class Team{
     String name;
-    List<Player> players = new ArrayList<Player>();
+    List<Player> players = new ArrayList<>();
     int matchesPlayed;
     int matchesWon;
     int setsWon;
@@ -368,7 +349,55 @@ class Team{
     public void removePlayer(Player player){
         players.remove(player);
     }
-    
+}
+
+// A class to handle selecting two teams
+class TeamSelector{
+    public static void display(){
+        // Set the properties for the popup team selector window
+        Stage popupwindow = new Stage();
+        popupwindow.initModality(Modality.APPLICATION_MODAL);
+        popupwindow.setTitle("Team Selector");
+        Button submit = new Button("Submit");
+        
+        //Create an array for the team names
+        String[] teamNames = new String[TheBRIANSystem.teamsArray.size()];
+        for (int i = 0; i < TheBRIANSystem.teamsArray.size(); i++){
+            teamNames[i] = TheBRIANSystem.teamsArray.get(i).getName();
+        }
+        
+        // Create the combo boxes
+        //Home team combo box
+        ComboBox comboHomeTeam = new ComboBox();
+        comboHomeTeam.setMinWidth(150);
+        comboHomeTeam.getItems().addAll(teamNames);
+        
+        //Away team combo box
+        ComboBox comboAwayTeam = new ComboBox();
+        comboAwayTeam.setMinWidth(150);
+        comboAwayTeam.getItems().addAll(teamNames);
+        
+        //Make the grid pane and add the features in place
+        GridPane teams = new GridPane();
+        teams.add(new Label("Select the home and away team:"), 0, 0);
+        teams.add(new Label("Home Team:"), 0, 1);
+        teams.add(comboHomeTeam, 1, 1);
+        teams.add(new Label("Away Team:"), 0, 2);
+        teams.add(comboAwayTeam, 1, 2);
+        teams.add(submit, 0, 3);
+        
+        // Set the scene and display
+        Scene teamScene = new Scene(teams, 300, 200);
+        popupwindow.setScene(teamScene);
+        popupwindow.showAndWait();
+        
+        submit.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                //DO STUFF
+            }
+        });
+    }
 }
 
 // Create a class that can handle the login for the admin page.
@@ -466,8 +495,8 @@ class Statistics implements Runnable {
 public class TheBRIANSystem extends Application {
     
     // Create the arrays that will hold the teams and matches
-    public List<Match> matchesArray = new ArrayList<Match>();
-    public List<Team> teamsArray = new ArrayList<Team>();
+    public static List<Match> matchesArray = new ArrayList<>();
+    public static List<Team> teamsArray = new ArrayList<>();
     
     // Create a function that will handle the initialisation of files
     public void initialSetup(){
@@ -956,6 +985,9 @@ public class TheBRIANSystem extends Application {
         viewScores.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                //Create popup to select home and away team
+                TeamSelector.display();
+                
                 textArea.setText("--VIEWING SCORES--");
                 System.out.println("--VIEWING SCORES--");
             }
