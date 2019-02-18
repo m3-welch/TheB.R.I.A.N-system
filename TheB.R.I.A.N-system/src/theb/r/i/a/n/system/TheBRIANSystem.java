@@ -24,6 +24,8 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.SingleSelectionModel;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 
@@ -441,6 +443,14 @@ class Login{
         PasswordField password = new PasswordField();
         Button submit = new Button("Submit");
         submit.setOnAction(e-> submitAndClose(popupwindow, password.getText()));
+        password.setOnKeyPressed(new EventHandler<KeyEvent>(){
+            @Override
+            public void handle(KeyEvent keyEvent){
+                if(keyEvent.getCode() == KeyCode.ENTER){
+                    submitAndClose(popupwindow, password.getText());
+                }
+            }
+        });
 
         // Create the grid pane for the login window and set its properties
         GridPane login = new GridPane();
