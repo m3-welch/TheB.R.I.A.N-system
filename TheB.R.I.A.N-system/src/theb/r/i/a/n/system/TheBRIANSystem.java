@@ -26,8 +26,6 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
-import java.io.FileWriter;
-import java.io.IOException;
 
 
 // Create a class to represent the game data struture. Has the appropriate get 
@@ -359,6 +357,17 @@ class Team{
 
 // A class to handle selecting two teams
 class TeamSelector{
+    static private void submitAndClose(Stage window, String homeTeam, String awayTeam){
+        for(int i = 0; i < TheBRIANSystem.matchesArray.size(); i++){
+            if((TheBRIANSystem.matchesArray.get(i).getHomeTeam().getName().equals(homeTeam)) && TheBRIANSystem.matchesArray.get(i).getAwayTeam().getName().equals(awayTeam)){
+                TheBRIANSystem.selectedMatch = TheBRIANSystem.matchesArray.get(i);
+                window.close();
+            }
+        }
+        System.out.println("Match not found");
+        window.close();
+    }
+    
     public static void display(){
         // Set the properties for the popup team selector window
         Stage popupwindow = new Stage();
@@ -392,17 +401,12 @@ class TeamSelector{
         teams.add(comboAwayTeam, 1, 2);
         teams.add(submit, 0, 3);
         
+        submit.setOnAction(e-> submitAndClose(popupwindow, comboHomeTeam.getValue().toString(), comboAwayTeam.getValue().toString()));
+        
         // Set the scene and display
         Scene teamScene = new Scene(teams, 300, 200);
         popupwindow.setScene(teamScene);
         popupwindow.showAndWait();
-        
-        submit.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                //DO STUFF
-            }
-        });
     }
 }
 
@@ -503,6 +507,8 @@ public class TheBRIANSystem extends Application {
     // Create the arrays that will hold the teams and matches
     public static List<Match> matchesArray = new ArrayList<>();
     public static List<Team> teamsArray = new ArrayList<>();
+    
+    public static Match selectedMatch = new Match();
     
     // Create a function that will handle the initialisation of files
     public void initialSetup(){
@@ -1024,6 +1030,7 @@ public class TheBRIANSystem extends Application {
             public void handle(ActionEvent event) {
                 //Create popup to select home and away team
                 TeamSelector.display();
+                Match match = selectedMatch;
                 
                 textArea.setText("--VIEWING SCORES--");
                 System.out.println("--VIEWING SCORES--");
@@ -1218,19 +1225,14 @@ public class TheBRIANSystem extends Application {
         modifySheet.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                initialSetup();
-                System.out.println("--SELECTING A SCORESHEET TO MODIFY--");
-                // Let the user choose a file from the matches folder
-                FileChooser fileChooser = new FileChooser();
-                File startFolder = new File("./matches");
-                fileChooser.setInitialDirectory(startFolder);
-                File selectedFile = fileChooser.showOpenDialog(null);
+                TeamSelector.display();
+                Match match = selectedMatch;
                 
                 // For each of the items in the matches array
                 for(int i = 0;i<matchesArray.size();i++){
                     // If the filename matches the filename the user has chosen,
                     // do this
-                    if(matchesArray.get(i).getFileName().equals(selectedFile.getName())){
+                    if(matchesArray.get(i).getMatchID() == match.getMatchID()){
                         // Set a flag to true to show a file has been modified
                         // rather than a new file being created
                         modify = true;
