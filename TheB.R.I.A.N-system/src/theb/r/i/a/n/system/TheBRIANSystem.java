@@ -748,7 +748,8 @@ public class TheBRIANSystem extends Application {
         newTeam.setText("Enter a new team");
         
         //create the button and textfield for the user inputs
-        TextField newTeamName = new TextField("Enter a new team name");
+        TextField newTeamName = new TextField();
+        newTeamName.setPromptText("Team Name");
         Button submitTeamName = new Button("Add Team");
         
         // Create a listener for the new team button
@@ -789,11 +790,12 @@ public class TheBRIANSystem extends Application {
         newPlayerGrid.setVgap(4);
         newPlayerGrid.setHgap(4);
         newPlayerGrid.setPadding(new Insets(5, 5, 5, 5));
-        newPlayer.setText("Enter a new player, e.g. John Smith");
+        newPlayer.setText("Enter a new player's full name");
         
         //create a textfield, a dropdown for teams and a button for the new 
         //player
-        TextField playerName = new TextField("John");
+        TextField playerName = new TextField();
+        playerName.setPromptText("John Smith");
         Button addPlayer = new Button("Add Player");        
         ComboBox teamList = new ComboBox();
         String[] comboTeamNames = new String[teamsArray.size()];
@@ -862,7 +864,19 @@ public class TheBRIANSystem extends Application {
         generateFixturesButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                System.out.println("--GENERATING FIXTURES--");
+                String[][] fixtures = new String[teamsArray.size()][teamsArray.size()];
+                for (int i = 0; i < teamsArray.size(); i++){
+                    for (int n = 0; n < teamsArray.size(); n++){
+                        if(i == n){
+                            fixtures[i][n] = "---";
+                        }
+                        else{
+                            fixtures[i][n] = "np";
+                        }
+                    }
+                }
+                
+                System.out.println("FIXTURES GENERATED");
             }
         });
         
@@ -981,6 +995,7 @@ public class TheBRIANSystem extends Application {
             @Override
             public void handle(ActionEvent event) {
                 textArea.setText("--VIEWING FIXTURES AND RESULT CHART--");
+                
                 System.out.println("--VIEW FIXTURES AND RESULTS--");
             }
         });
