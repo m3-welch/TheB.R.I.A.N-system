@@ -24,12 +24,9 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.stage.FileChooser;
-import javafx.stage.Modality;
+
 
 
 // Create a class to represent the game data struture. Has the appropriate get 
@@ -572,6 +569,7 @@ public class TheBRIANSystem extends Application {
                     team.setsWon = Integer.parseInt(teamScanner.next());
                     // Add the team to the team array
                     teamsArray.add(team);
+                    teamObservableList.add(team.getName());
                 }
                 System.out.println("Loaded initial team data");
             }
@@ -782,6 +780,7 @@ public class TheBRIANSystem extends Application {
                 String teamName = newTeamName.getText();
                 Team addTeam = new Team (teamName);
                 teamsArray.add(addTeam);
+                teamObservableList.add(addTeam.getName());
                 System.out.println(addTeam.getName() + " has been added");
             }
         });
@@ -1123,25 +1122,10 @@ public class TheBRIANSystem extends Application {
         modifySheet.setMinWidth(300);
         Label homeTeamLabel = new Label("Home Team");
         Label awayTeamLabel = new Label("Away Team");
+        
         ComboBox homeTeam = new ComboBox();
-        
-        comboTeamNames = new String[teamsArray.size()];
-        for (int i = 0; i < teamsArray.size(); i++){
-            comboTeamNames[i] = teamsArray.get(i).getName();
-        }
-        homeTeam.getItems().addAll(comboTeamNames);
-        
-        homeTeam.setMinWidth(150);
-        
         ComboBox awayTeam = new ComboBox();
-        
-        comboTeamNames = new String[teamsArray.size()];
-        for (int i = 0; i < teamsArray.size(); i++){
-            comboTeamNames[i] = teamsArray.get(i).getName();
-        }
-        awayTeam.getItems().addAll(comboTeamNames);
-        
-        awayTeam.setMinWidth(150);
+
         Label singleSets = new Label("Single Sets");
         Label doubleSetLabel = new Label("Double Set");
         
