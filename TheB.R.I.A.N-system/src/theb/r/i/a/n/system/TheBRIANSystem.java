@@ -1,7 +1,11 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+TODO: 
+
+ALL OF THE VIEWER PAGE
+ - View Fixture and Result Chart
+ - Show all Team Stats
+ - Show all Team Rankings
+ - Viewer Match Scores
  */
 package theb.r.i.a.n.system;
 
@@ -516,16 +520,33 @@ public class TheBRIANSystem extends Application {
     // Create the arrays that will hold the teams and matches
     public static List<Match> matchesArray = new ArrayList<>();
     public static List<Team> teamsArray = new ArrayList<>();
+    public static String[][] fixtures = new String[teamsArray.size()][teamsArray.size()];
+      
+    public void fixtures_generation(){
+        for (int i = 0; i < teamsArray.size(); i++){
+            for (int n = 0; n < teamsArray.size(); n++){
+                if(i == n){
+                    fixtures[i][n] = "---";
+                }
+                else{
+                    fixtures[i][n] = "np";
+                }
+            }
+        }
+    }
     
     // Obserable list vairables of the teams to be used in combo boxes
     ObservableList<String> teamObservableList = FXCollections.observableArrayList();
     ObservableList<String> homePlayers = FXCollections.observableArrayList();
     ObservableList<String> awayPlayers = FXCollections.observableArrayList();
-    
+   
     public static Match selectedMatch = new Match();
     
     // Create a function that will handle the initialisation of files
     public void initialSetup(){
+        //initial generation of fixtures
+        fixtures_generation();
+        
         // Create the array of the list of files in the matches folder
         File matchesPath = new File("./matches");
         File [] matchFiles = matchesPath.listFiles();
@@ -830,16 +851,7 @@ public class TheBRIANSystem extends Application {
         addPlayer.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                String[] newPlayerName = playerName.getText().split(" ");
-                
-                Player player = new Player(newPlayerName[0],newPlayerName[1]);
-                for (int i = 0; i < teamsArray.size(); i++){
-                    if(teamList.getValue() == teamsArray.get(i).getName()){
-                        teamsArray.get(i).addPlayer(player);
-                    }
-                }
-
-                System.out.println(player.firstName + " " + player.lastName + " has been added to " + teamList.getValue());
+                fixtures_generation();
             }
         });
         
@@ -1017,10 +1029,31 @@ public class TheBRIANSystem extends Application {
             @Override
             public void handle(ActionEvent event) {
                 textArea.setText("--VIEWING FIXTURES AND RESULT CHART--");
+                String[] fixture_row = new String[teamsArray.size()];
+                fixture_row[0] = "    ";
+                
+                for(int i = 0; i < teamsArray.size(); i++){
+                    fixture_row[0] = fixture_row[0] + "  " + teamsArray.get(i).getName();
+                    if (i >= 1){
+                        String fixtures_i = "";
+                        for(int n = 0; n <= teamsArray.size(); n++){
+                            fixtures_i = fixtures_i + fixtures[(i-1)][n];
+                        }
+                        fixture_row[i] = teamsArray.get(i-1).getName() + fixtures_i + "\n";
+                    }
+                }
+                fixture_row[0] = fixture_row[0] + "\n";
+                
+                
+                Alert alert = new Alert(AlertType.INFORMATION);
+                alert.setTitle("Fixtures");
+                alert.setHeaderText(fixture_row.toString());
+                alert.showAndWait();
                 
                 System.out.println("--VIEW FIXTURES AND RESULTS--");
             }
         });
+
         
         // Create a handler for the team stats button
         teamStats.setOnAction(new EventHandler<ActionEvent>() {
