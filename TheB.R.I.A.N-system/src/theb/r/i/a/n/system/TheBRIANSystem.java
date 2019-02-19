@@ -364,7 +364,7 @@ class TeamSelector{
 
     static private void submitAndClose(Stage window, String homeTeam, String awayTeam){
         
-        for(int i = 0; i < TheBRIANSystem.matchesArray.size(); i++){
+        for(int i = 0; i < TheBRIANSystem.matchesArray.size() - 1; i++){
             if((TheBRIANSystem.matchesArray.get(i).getHomeTeam().getName().equals(homeTeam)) && TheBRIANSystem.matchesArray.get(i).getAwayTeam().getName().equals(awayTeam)){
                 TheBRIANSystem.selectedMatch = TheBRIANSystem.matchesArray.get(i);
                 TheBRIANSystem.matchPlayed = true;
@@ -1719,6 +1719,7 @@ public class TheBRIANSystem extends Application {
                             
                             matchesArray.get(i).calculateWinner();
                             finalTeamScores.setText(Integer.toString(matchesArray.get(i).getHomeScore()) + ":" + Integer.toString(matchesArray.get(i).getAwayScore()));
+                            fixtures_generation();
                         }
                     }
                 }
@@ -1888,6 +1889,9 @@ public class TheBRIANSystem extends Application {
                     sets.add(setd);
                     
                     match.setSets(sets);
+                    
+                    matchesArray.add(match);
+                    fixtures_generation();
                 }
             }
         });
