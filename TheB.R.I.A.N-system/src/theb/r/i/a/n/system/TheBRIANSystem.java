@@ -1,7 +1,11 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+TODO: 
+
+ALL OF THE VIEWER PAGE
+ - View Fixture and Result Chart
+ - Show all Team Stats
+ - Show all Team Rankings
+ - Viewer Match Scores
  */
 package theb.r.i.a.n.system;
 
