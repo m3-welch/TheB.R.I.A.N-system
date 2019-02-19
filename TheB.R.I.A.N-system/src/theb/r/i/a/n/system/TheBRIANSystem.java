@@ -1126,6 +1126,53 @@ public class TheBRIANSystem extends Application {
             public void handle(ActionEvent event) {
                 textArea.setText("--VIEWING TEAM RANKINGS--");
                 System.out.println("--VIEWING RANKINGS--");
+                
+                // Create a popup to view the team rankings
+                Stage rankPopup = new Stage();
+                rankPopup.initModality(Modality.APPLICATION_MODAL);
+                rankPopup.setTitle("Team Rankings");
+                
+                //Create the pane layout for the popup
+                GridPane ranks = new GridPane();
+                ranks.setVgap(4);
+                ranks.setHgap(4);
+                ranks.setPadding(new Insets(5, 5, 5, 5));
+                
+                ranks.add(new Label("Rank"), 0, 0);
+                ranks.add(new Label("Team Names:"), 1, 0);
+                ranks.add(new Label("Matches won"), 2, 0);
+                
+                int maxWins = 0;
+                List<Integer> winOrder = new ArrayList<Integer>();
+                
+                for (int i = 0; i < teamsArray.size(); i++){
+                    if(teamsArray.get(i).getMatchesWon() > maxWins){
+                        maxWins = teamsArray.get(i).getMatchesWon();
+                    }
+                }
+                
+                while(winOrder.size() < teamsArray.size()){
+                    for(int j = 0; j < teamsArray.size(); j++){
+                        if(teamsArray.get(j).getMatchesWon() == maxWins){
+                            winOrder.add(0, j);
+                        }
+                    }
+                    maxWins--;
+                }
+                
+                int index;
+                int popupIndex = 1;
+                while(winOrder.size() > 0){
+                    index = winOrder.get(0);
+                    ranks.add(new Label(Integer.toString(popupIndex)), 0, popupIndex);
+                    ranks.add(new Label(teamsArray.get(index).getName()), 1, popupIndex);
+                    ranks.add(new Label(Integer.toString(teamsArray.get(index).getMatchesWon())), 2, popupIndex);
+                    popupIndex++;
+                }
+                
+                Scene ranksScene = new Scene(ranks, 200, 200);
+                rankPopup.setScene(ranksScene);
+                rankPopup.showAndWait();
             }
         });
         
