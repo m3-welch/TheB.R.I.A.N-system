@@ -4,7 +4,6 @@ TODO:
 ALL OF THE VIEWER PAGE
  - View Fixture and Result Chart
  - Show all Team Rankings
- - Viewer Match Scores
  */
 package theb.r.i.a.n.system;
 
@@ -20,7 +19,7 @@ import java.io.FileNotFoundException;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.paint.Color;
+import javafx.scene.paint.*;
 import java.util.*;
 import static javafx.application.Application.launch;
 import javafx.beans.value.ChangeListener;
@@ -365,7 +364,7 @@ class TeamSelector{
 
     static private void submitAndClose(Stage window, String homeTeam, String awayTeam){
         
-        for(int i = 0; i < TheBRIANSystem.matchesArray.size(); i++){
+        for(int i = 0; i < TheBRIANSystem.matchesArray.size() - 1; i++){
             if((TheBRIANSystem.matchesArray.get(i).getHomeTeam().getName().equals(homeTeam)) && TheBRIANSystem.matchesArray.get(i).getAwayTeam().getName().equals(awayTeam)){
                 TheBRIANSystem.selectedMatch = TheBRIANSystem.matchesArray.get(i);
                 TheBRIANSystem.matchPlayed = true;
@@ -653,9 +652,6 @@ public class TheBRIANSystem extends Application {
     }
     
     
-    // Create the object to hold the stats
-    public static List<String[]> statisticsArray = new ArrayList<String[]>();
-    
     // Obserable list vairables of the teams to be used in combo boxes
     ObservableList<String> teamObservableList = FXCollections.observableArrayList();
     ObservableList<String> homePlayers = FXCollections.observableArrayList();
@@ -663,6 +659,10 @@ public class TheBRIANSystem extends Application {
    
     public static Match selectedMatch = new Match();
     public static boolean matchPlayed = false;
+    
+    //Create border variables to be used
+    public static Border thickBorder = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, new CornerRadii(2), new BorderWidths(2)));
+    public static Border thinBorder = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, new CornerRadii(1), new BorderWidths(1)));
     
     // Create a function that will handle the initialisation of files
     public void initialSetup(){
@@ -1097,6 +1097,8 @@ public class TheBRIANSystem extends Application {
         ///               ///
         /////////////////////
         
+        
+        
         //create a grid pane for the viewer tab and set all the preferences
         GridPane viewer = new GridPane();
         viewer.setVgap(6);
@@ -1166,6 +1168,53 @@ public class TheBRIANSystem extends Application {
             public void handle(ActionEvent event) {
                 textArea.setText("--VIEWING TEAM RANKINGS--");
                 System.out.println("--VIEWING RANKINGS--");
+                
+                // Create a popup to view the team rankings
+                Stage rankPopup = new Stage();
+                rankPopup.initModality(Modality.APPLICATION_MODAL);
+                rankPopup.setTitle("Team Rankings");
+                
+                //Create the pane layout for the popup
+                GridPane ranks = new GridPane();
+                ranks.setVgap(4);
+                ranks.setHgap(4);
+                ranks.setPadding(new Insets(5, 5, 5, 5));
+                
+                ranks.add(new Label("Rank"), 0, 0);
+                ranks.add(new Label("Team Names:"), 1, 0);
+                ranks.add(new Label("Matches won"), 2, 0);
+                
+                int maxWins = 0;
+                List<Integer> winOrder = new ArrayList<Integer>();
+                
+                for (int i = 0; i < teamsArray.size(); i++){
+                    if(teamsArray.get(i).getMatchesWon() > maxWins){
+                        maxWins = teamsArray.get(i).getMatchesWon();
+                    }
+                }
+                
+                while(winOrder.size() < teamsArray.size()){
+                    for(int j = 0; j < teamsArray.size(); j++){
+                        if(teamsArray.get(j).getMatchesWon() == maxWins){
+                            winOrder.add(0, j);
+                        }
+                    }
+                    maxWins--;
+                }
+                
+                int index;
+                int popupIndex = 1;
+                while(winOrder.size() > 0){
+                    index = winOrder.get(0);
+                    ranks.add(new Label(Integer.toString(popupIndex)), 0, popupIndex);
+                    ranks.add(new Label(teamsArray.get(index).getName()), 1, popupIndex);
+                    ranks.add(new Label(Integer.toString(teamsArray.get(index).getMatchesWon())), 2, popupIndex);
+                    popupIndex++;
+                }
+                
+                Scene ranksScene = new Scene(ranks, 200, 200);
+                rankPopup.setScene(ranksScene);
+                rankPopup.showAndWait();
             }
         });
         
@@ -1239,15 +1288,36 @@ public class TheBRIANSystem extends Application {
                     Label singleSets = new Label("Single Sets");
                     Label doubleSetLabel = new Label("Double Set");
                     
-                    //Create the labels which display each game
-                    Label set11 = new Label(Integer.toString(match.sets.get(0).games.get(0).getHomeScore()) + ":" + Integer.toString(match.sets.get(0).games.get(0).getHomeScore()));
-                    Label set12 = new Label(Integer.toString(match.sets.get(0).games.get(1).getHomeScore()) + ":" + Integer.toString(match.sets.get(0).games.get(1).getHomeScore()));
-                    //set12.setText(Integer.toString(matchesArray.get(i).sets.get(0).games.get(1).getHomeScore()) + ":" + Integer.toString(matchesArray.get(i).sets.get(0).games.get(1).getAwayScore()));
-                    //set13.setText(Integer.toString(matchesArray.get(i).sets.get(0).games.get(2).getHomeScore()) + ":" + Integer.toString(matchesArray.get(i).sets.get(0).games.get(2).getAwayScore()));
+                    //Get the player's names
+                    Label awayPlayer1 = new Label(match.awayPlayer1.getFullName());
+                    Label awayPlayer2 = new Label(match.awayPlayer2.getFullName());
+                    Label homePlayer1 = new Label(match.homePlayer1.getFullName());
+                    Label homePlayer2 = new Label(match.homePlayer2.getFullName());
                     
+                    //Create the labels which display each set
+                    Label set11 = new Label(Integer.toString(match.sets.get(0).games.get(0).getHomeScore()) + ":" + Integer.toString(match.sets.get(0).games.get(0).getAwayScore()));
+                    Label set12 = new Label(Integer.toString(match.sets.get(0).games.get(1).getHomeScore()) + ":" + Integer.toString(match.sets.get(0).games.get(1).getAwayScore()));
+                    Label set13 = new Label(Integer.toString(match.sets.get(0).games.get(2).getHomeScore()) + ":" + Integer.toString(match.sets.get(0).games.get(2).getAwayScore()));
+                    
+                    Label set21 = new Label(Integer.toString(match.sets.get(1).games.get(0).getHomeScore()) + ":" + Integer.toString(match.sets.get(1).games.get(0).getAwayScore()));
+                    Label set22 = new Label(Integer.toString(match.sets.get(1).games.get(1).getHomeScore()) + ":" + Integer.toString(match.sets.get(1).games.get(1).getAwayScore()));
+                    Label set23 = new Label(Integer.toString(match.sets.get(1).games.get(2).getHomeScore()) + ":" + Integer.toString(match.sets.get(1).games.get(2).getAwayScore()));
+                    
+                    Label set31 = new Label(Integer.toString(match.sets.get(2).games.get(0).getHomeScore()) + ":" + Integer.toString(match.sets.get(2).games.get(0).getAwayScore()));
+                    Label set32 = new Label(Integer.toString(match.sets.get(2).games.get(1).getHomeScore()) + ":" + Integer.toString(match.sets.get(2).games.get(1).getAwayScore()));
+                    Label set33 = new Label(Integer.toString(match.sets.get(2).games.get(2).getHomeScore()) + ":" + Integer.toString(match.sets.get(2).games.get(2).getAwayScore()));
+                    
+                    Label set41 = new Label(Integer.toString(match.sets.get(3).games.get(0).getHomeScore()) + ":" + Integer.toString(match.sets.get(3).games.get(0).getAwayScore()));
+                    Label set42 = new Label(Integer.toString(match.sets.get(3).games.get(1).getHomeScore()) + ":" + Integer.toString(match.sets.get(3).games.get(1).getAwayScore()));
+                    Label set43 = new Label(Integer.toString(match.sets.get(3).games.get(2).getHomeScore()) + ":" + Integer.toString(match.sets.get(3).games.get(2).getAwayScore()));
+                    
+                    Label setd1 = new Label(Integer.toString(match.sets.get(4).games.get(0).getHomeScore()) + ":" + Integer.toString(match.sets.get(4).games.get(0).getAwayScore()));
+                    Label setd2 = new Label(Integer.toString(match.sets.get(4).games.get(1).getHomeScore()) + ":" + Integer.toString(match.sets.get(4).games.get(1).getAwayScore()));
+                    Label setd3 = new Label(Integer.toString(match.sets.get(4).games.get(2).getHomeScore()) + ":" + Integer.toString(match.sets.get(4).games.get(2).getAwayScore()));
+                    
+                    // Create the last label for the final result
                     match.calculateWinner();
-                    Label finalTeamScores = new Label(Integer.toString(match.getHomeScore()) + ":" + Integer.toString(match.getAwayScore()));
-                    
+                    Label finalTeamScores = new Label("Final Score:\n" + Integer.toString(match.getHomeScore()) + ":" + Integer.toString(match.getAwayScore()));
                     
                     // Add the nodes
                     set1.add(set11, 0, 0);
@@ -1266,14 +1336,9 @@ public class TheBRIANSystem extends Application {
                     doubleSet.add(setd2, 0, 1);
                     doubleSet.add(setd3, 0, 2);
 
-
                     //add the nodes to the gridpane
-                    scoresheet.add(newSheet, 0, 0);
-                    scoresheet.add(modifySheet, 1, 0);
                     sides.add(homeTeamLabel, 0, 0);
-                    sides.add(homeTeam, 1, 0);
                     sides.add(awayTeamLabel, 2, 0);
-                    sides.add(awayTeam, 3, 0);
                     grid.add(singleSets, 0, 0);
                     grid.add(awayPlayer1, 1, 0);
                     grid.add(awayPlayer2, 2, 0);
@@ -1286,14 +1351,24 @@ public class TheBRIANSystem extends Application {
                     grid.add(set3, 1, 2);
                     grid.add(set4, 2, 2);
                     grid.add(doubleSet, 1, 3);
-                    scoreroot.add(calculate, 0, 3);
-
-
-                    //add panes to the root
+                    
+                    // Add panes to the root
                     scoreroot.add(scoresheet, 0, 0);
                     scoreroot.add(sides, 0, 1);
                     scoreroot.add(grid, 0, 2);
-                    Scene teamScene = new Scene(teams, 300, 200);
+                    
+                    // Create a border for the grid
+                    sides.setBorder(thickBorder);
+                    grid.setBorder(thickBorder);
+                    
+                    set1.setBorder(thinBorder);
+                    set2.setBorder(thinBorder);
+                    set3.setBorder(thinBorder);
+                    set4.setBorder(thinBorder);
+                    doubleSet.setBorder(thinBorder);
+
+                    // Assign the scene and display it
+                    Scene teamScene = new Scene(scoreroot, 300, 320);
                     matchPopup.setScene(teamScene);
                     matchPopup.showAndWait();
                 }
@@ -1686,6 +1761,7 @@ public class TheBRIANSystem extends Application {
                             
                             matchesArray.get(i).calculateWinner();
                             finalTeamScores.setText(Integer.toString(matchesArray.get(i).getHomeScore()) + ":" + Integer.toString(matchesArray.get(i).getAwayScore()));
+                            fixtures_generation();
                         }
                     }
                 }
@@ -1855,6 +1931,9 @@ public class TheBRIANSystem extends Application {
                     sets.add(setd);
                     
                     match.setSets(sets);
+                    
+                    matchesArray.add(match);
+                    fixtures_generation();
                 }
             }
         });
