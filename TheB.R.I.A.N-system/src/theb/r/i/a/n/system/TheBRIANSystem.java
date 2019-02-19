@@ -523,18 +523,21 @@ public class TheBRIANSystem extends Application {
     // Create the arrays that will hold the teams and matches
     public static List<Match> matchesArray = new ArrayList<>();
     public static List<Team> teamsArray = new ArrayList<>();
-    public static String[][] fixtures = new String[teamsArray.size()][teamsArray.size()];
+    public static List<String[]> fixtures = new ArrayList<String[]>();
+    
+    //public static String[][] fixtures = new String[teamsArray.size()][teamsArray.size()];
       
     public void fixtures_generation(){
+       String[] matches = new String[teamsArray.size()];
+                  
         for (int i = 0; i < teamsArray.size(); i++){
-            for (int n = 0; n < teamsArray.size(); n++){
-                if(i == n){
-                    fixtures[i][n] = "---";
-                }
-                else{
-                    fixtures[i][n] = "np";
+            for(int n = 0; n < teamsArray.size(); n++){
+                matches[n] = "np";
+                if (n == i){
+                    matches[n] = "---";
                 }
             }
+            fixtures.add(matches);
         }
     }
     
@@ -717,6 +720,7 @@ public class TheBRIANSystem extends Application {
        
         // Run the initial setup function that loads in data
         initialSetup();
+        fixtures_generation();
         //create the main tab pane that will be the basis of the whole UI
         TabPane tabs = new TabPane();
         
@@ -1030,25 +1034,31 @@ public class TheBRIANSystem extends Application {
             @Override
             public void handle(ActionEvent event) {
                 textArea.setText("--VIEWING FIXTURES AND RESULT CHART--");
-                String[] fixture_row = new String[teamsArray.size()];
-                fixture_row[0] = "    ";
+                               
+                String[] fixture_row = new String[fixtures.size() + 1];
                 
-                for(int i = 0; i < teamsArray.size(); i++){
-                    fixture_row[0] = fixture_row[0] + "  " + teamsArray.get(i).getName();
-                    if (i >= 1){
-                        String fixtures_i = "";
-                        for(int n = 0; n <= teamsArray.size(); n++){
-                            fixtures_i = fixtures_i + fixtures[(i-1)][n];
+                for(int i = 1; i < fixtures.size(); i++){
+                    for(int n = 1; n < fixtures.size(); n++){
+                        if (i == 0){
+                            fixture_row[0] = "    ";
                         }
-                        fixture_row[i] = teamsArray.get(i-1).getName() + fixtures_i + "\n";
+                        if (n == 0){
+                            fixture_row[i] = "";
+                        }
+                        fixture_row[i] = fixture_row[i] + fixtures.get(i)[n];
                     }
                 }
-                fixture_row[0] = fixture_row[0] + "\n";
                 
+                //"    " + fixtures.get(0)[i] + " \n";
+                
+                String fixture_string = fixture_row[0];
+                for(int i = 1; i < fixtures.size(); i++){
+                    fixture_string = fixture_string + fixture_row[i] + "\n";
+                }
                 
                 Alert alert = new Alert(AlertType.INFORMATION);
                 alert.setTitle("Fixtures");
-                alert.setHeaderText(fixture_row.toString());
+                alert.setHeaderText(fixture_string);
                 alert.showAndWait();
                 
                 System.out.println("--VIEW FIXTURES AND RESULTS--");
