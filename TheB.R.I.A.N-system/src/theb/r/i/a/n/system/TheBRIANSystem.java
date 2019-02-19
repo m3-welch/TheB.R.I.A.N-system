@@ -21,6 +21,8 @@ import javafx.scene.paint.Color;
 import java.util.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.SingleSelectionModel;
@@ -517,6 +519,11 @@ public class TheBRIANSystem extends Application {
     // Create the arrays that will hold the teams and matches
     public static List<Match> matchesArray = new ArrayList<>();
     public static List<Team> teamsArray = new ArrayList<>();
+    
+    // Obserable list vairables of the teams to be used in combo boxes
+    ObservableList<String> teamObservableList = FXCollections.observableArrayList();
+    ObservableList<String> homePlayers = FXCollections.observableArrayList();
+    ObservableList<String> awayPlayers = FXCollections.observableArrayList();
     
     public static Match selectedMatch = new Match();
     
@@ -1138,44 +1145,71 @@ public class TheBRIANSystem extends Application {
         Label singleSets = new Label("Single Sets");
         Label doubleSetLabel = new Label("Double Set");
         
+        homeTeam.setItems(teamObservableList);
+        homeTeam.setMinWidth(150);
+        homeTeam.getSelectionModel().selectFirst();
+        for(int player = 0;  player < teamsArray.get(0).players.size(); player++)
+            homePlayers.add(teamsArray.get(0).players.get(player).getFullName());
+        
+        //Add a listener for when the combo box is changed
+        homeTeam.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>(){
+            //A method to check if the value has been changed or not
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldTeam, String newTeam) {
+                if(!(oldTeam.equals(newTeam))){  // If the combo box has been changed
+                    homePlayers.clear();  // Clear the players array
+                    for(int teamNum = 0; teamNum < teamsArray.size(); teamNum++) {
+                        // Find which team we are now looking at
+                        if(teamsArray.get(teamNum).getName().equals(newTeam)){
+                            // When found -> add players to observable list
+                            for(int player = 0;  player < teamsArray.get(teamNum).players.size(); player++)
+                                homePlayers.add(teamsArray.get(teamNum).players.get(player).getFullName());
+                        }
+                    }
+                }
+            }
+        });
+        
+        awayTeam.setItems(teamObservableList);
+        awayTeam.setMinWidth(150);
+        awayTeam.getSelectionModel().selectFirst();
+        for(int player = 0;  player < teamsArray.get(0).players.size(); player++)
+            awayPlayers.add(teamsArray.get(0).players.get(player).getFullName());
+        
+        //Add a listener for when the combo box is changed
+        awayTeam.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>(){
+            //A method to check if the value has been changed or not
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldTeam, String newTeam) {
+                if(!(oldTeam.equals(newTeam))){  // If the combo box has been changed
+                    awayPlayers.clear();  // Clear the players array
+                    for(int teamNum = 0; teamNum < teamsArray.size(); teamNum++) {
+                        // Find which team we are now looking at
+                        if(teamsArray.get(teamNum).getName().equals(newTeam)){
+                            // When found -> add players to observable list
+                            for(int player = 0;  player < teamsArray.get(teamNum).players.size(); player++)
+                                awayPlayers.add(teamsArray.get(teamNum).players.get(player).getFullName());
+                        }
+                    }
+                }
+            }
+        });
+       
+        
         ComboBox awayPlayer1 = new ComboBox();
-        
-        comboTeamNames = new String[teamsArray.size()];
-        for (int i = 0; i < teamsArray.size(); i++){
-            comboTeamNames[i] = teamsArray.get(i).getName();
-        }
-        awayPlayer1.getItems().addAll(comboTeamNames);
-        
+        awayPlayer1.setItems(awayPlayers);
         awayPlayer1.setMinWidth(150);
         
         ComboBox awayPlayer2 = new ComboBox();
-        
-        comboTeamNames = new String[teamsArray.size()];
-        for (int i = 0; i < teamsArray.size(); i++){
-            comboTeamNames[i] = teamsArray.get(i).getName();
-        }
-        awayPlayer2.getItems().addAll(comboTeamNames);
-        
+        awayPlayer2.setItems(awayPlayers);
         awayPlayer2.setMinWidth(150);
         
         ComboBox homePlayer1 = new ComboBox();
-        
-        comboTeamNames = new String[teamsArray.size()];
-        for (int i = 0; i < teamsArray.size(); i++){
-            comboTeamNames[i] = teamsArray.get(i).getName();
-        }
-        homePlayer1.getItems().addAll(comboTeamNames);
-        
+        homePlayer1.setItems(homePlayers);
         homePlayer1.setMinWidth(100);
         
         ComboBox homePlayer2 = new ComboBox();
-        
-        comboTeamNames = new String[teamsArray.size()];
-        for (int i = 0; i < teamsArray.size(); i++){
-            comboTeamNames[i] = teamsArray.get(i).getName();
-        }
-        homePlayer2.getItems().addAll(comboTeamNames);
-        
+        homePlayer2.setItems(homePlayers);
         homePlayer2.setMinWidth(100);
         TextField finalTeamScores = new TextField("Final Team Scores");
         finalTeamScores.setEditable(false);
