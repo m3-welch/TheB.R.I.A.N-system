@@ -3,7 +3,6 @@ TODO:
 
 ALL OF THE VIEWER PAGE
  - View Fixture and Result Chart
- - Show all Team Stats
  - Show all Team Rankings
  - Viewer Match Scores
  */
@@ -363,14 +362,15 @@ class Team{
 
 // A class to handle selecting two teams
 class TeamSelector{
+
     static private void submitAndClose(Stage window, String homeTeam, String awayTeam){
+        
         for(int i = 0; i < TheBRIANSystem.matchesArray.size(); i++){
             if((TheBRIANSystem.matchesArray.get(i).getHomeTeam().getName().equals(homeTeam)) && TheBRIANSystem.matchesArray.get(i).getAwayTeam().getName().equals(awayTeam)){
                 TheBRIANSystem.selectedMatch = TheBRIANSystem.matchesArray.get(i);
-                window.close();
+                TheBRIANSystem.matchPlayed = true;
             }
         }
-        System.out.println("Match not found");
         window.close();
     }
     
@@ -390,12 +390,12 @@ class TeamSelector{
         // Create the combo boxes
         //Home team combo box
         ComboBox comboHomeTeam = new ComboBox();
-        comboHomeTeam.setMinWidth(150);
+        comboHomeTeam.setMinWidth(100);
         comboHomeTeam.getItems().addAll(teamNames);
         
         //Away team combo box
         ComboBox comboAwayTeam = new ComboBox();
-        comboAwayTeam.setMinWidth(150);
+        comboAwayTeam.setMinWidth(100);
         comboAwayTeam.getItems().addAll(teamNames);
         
         //Make the grid pane and add the features in place
@@ -577,12 +577,16 @@ public class TheBRIANSystem extends Application {
     // Create the object to hold the stats
     public static List<String[]> statisticsArray = new ArrayList<String[]>();
     
+    // Create the object to hold the stats
+    public static List<String[]> statisticsArray = new ArrayList<String[]>();
+    
     // Obserable list vairables of the teams to be used in combo boxes
     ObservableList<String> teamObservableList = FXCollections.observableArrayList();
     ObservableList<String> homePlayers = FXCollections.observableArrayList();
     ObservableList<String> awayPlayers = FXCollections.observableArrayList();
    
     public static Match selectedMatch = new Match();
+    public static boolean matchPlayed = false;
     
     // Create a function that will handle the initialisation of files
     public void initialSetup(){
@@ -1128,11 +1132,133 @@ public class TheBRIANSystem extends Application {
             @Override
             public void handle(ActionEvent event) {
                 //Create popup to select home and away team
+                matchPlayed = false;
                 TeamSelector.display();
-                Match match = selectedMatch;
-                
-                textArea.setText("--VIEWING SCORES--");
-                System.out.println("--VIEWING SCORES--");
+                if(matchPlayed){  // If the selected match has been played
+                    textArea.setText("--VIEWING SCORES--");
+                    System.out.println("--VIEWING SCORES--");
+                    Match match = selectedMatch;
+                    
+                    // Create a popup to display the match details
+                    Stage matchPopup = new Stage();
+                    matchPopup.initModality(Modality.APPLICATION_MODAL);
+                    matchPopup.setTitle("Match viewer");
+                    
+                    //Create the layout for the match popup
+                    GridPane scoresheet = new GridPane();
+                    scoresheet.setVgap(4);
+                    scoresheet.setHgap(4);
+                    scoresheet.setPadding(new Insets(5, 5, 5, 5));
+
+                    GridPane sides = new GridPane();
+                    sides.setVgap(4);
+                    sides.setHgap(4);
+                    sides.setPadding(new Insets(5, 5, 5, 5));
+
+                    GridPane scoreroot = new GridPane();
+                    scoreroot.setVgap(4);
+                    scoreroot.setHgap(4);
+                    scoreroot.setPadding(new Insets(5, 5, 5, 5));
+
+                    GridPane grid = new GridPane();
+                    grid.setVgap(4);
+                    grid.setHgap(4);
+                    grid.setPadding(new Insets(5, 5, 5, 5));
+
+                    GridPane set1 = new GridPane();
+                    set1.setVgap(4);
+                    set1.setHgap(4);
+                    set1.setPadding(new Insets(5, 5, 5, 5));
+
+                    GridPane set2 = new GridPane();
+                    set2.setVgap(4);
+                    set2.setHgap(4);
+                    set2.setPadding(new Insets(5, 5, 5, 5));
+
+                    GridPane set3 = new GridPane();
+                    set3.setVgap(4);
+                    set3.setHgap(4);
+                    set3.setPadding(new Insets(5, 5, 5, 5));
+
+                    GridPane set4 = new GridPane();
+                    set4.setVgap(4);
+                    set4.setHgap(4);
+                    set4.setPadding(new Insets(5, 5, 5, 5));
+
+                    GridPane doubleSet = new GridPane();
+                    doubleSet.setVgap(4);
+                    doubleSet.setHgap(4);
+                    doubleSet.setPadding(new Insets(5, 5, 5, 5));
+                    
+                    //Create the labels for the display
+                    Label homeTeamLabel = new Label("Home Team: " + match.getHomeTeam().getName());
+                    Label awayTeamLabel = new Label("Away Team: " + match.getAwayTeam().getName());
+                    
+                    Label singleSets = new Label("Single Sets");
+                    Label doubleSetLabel = new Label("Double Set");
+                    
+                    //Create the labels which display each game
+                    Label set11 = new Label(Integer.toString(match.sets.get(0).games.get(0).getHomeScore()) + ":" + Integer.toString(match.sets.get(0).games.get(0).getHomeScore()));
+                    Label set12 = new Label(Integer.toString(match.sets.get(0).games.get(1).getHomeScore()) + ":" + Integer.toString(match.sets.get(0).games.get(1).getHomeScore()));
+                    set12.setText(Integer.toString(matchesArray.get(i).sets.get(0).games.get(1).getHomeScore()) + ":" + Integer.toString(matchesArray.get(i).sets.get(0).games.get(1).getAwayScore()));
+                    set13.setText(Integer.toString(matchesArray.get(i).sets.get(0).games.get(2).getHomeScore()) + ":" + Integer.toString(matchesArray.get(i).sets.get(0).games.get(2).getAwayScore()));
+                    
+                    match.calculateWinner();
+                    Label finalTeamScores = new Label(Integer.toString(match.getHomeScore()) + ":" + Integer.toString(match.getAwayScore()));
+                    
+                    
+                    // Add the nodes
+                    set1.add(set11, 0, 0);
+                    set1.add(set12, 0, 1);
+                    set1.add(set13, 0, 2);
+                    set2.add(set21, 0, 0);
+                    set2.add(set22, 0, 1);
+                    set2.add(set23, 0, 2);
+                    set3.add(set31, 0, 0);
+                    set3.add(set32, 0, 1);
+                    set3.add(set33, 0, 2);
+                    set4.add(set41, 0, 0);
+                    set4.add(set42, 0, 1);
+                    set4.add(set43, 0, 2);
+                    doubleSet.add(setd1, 0, 0);
+                    doubleSet.add(setd2, 0, 1);
+                    doubleSet.add(setd3, 0, 2);
+
+
+                    //add the nodes to the gridpane
+                    scoresheet.add(newSheet, 0, 0);
+                    scoresheet.add(modifySheet, 1, 0);
+                    sides.add(homeTeamLabel, 0, 0);
+                    sides.add(homeTeam, 1, 0);
+                    sides.add(awayTeamLabel, 2, 0);
+                    sides.add(awayTeam, 3, 0);
+                    grid.add(singleSets, 0, 0);
+                    grid.add(awayPlayer1, 1, 0);
+                    grid.add(awayPlayer2, 2, 0);
+                    grid.add(homePlayer1, 0, 1);
+                    grid.add(homePlayer2, 0, 2);
+                    grid.add(doubleSetLabel, 0, 3);
+                    grid.add(finalTeamScores, 2, 3);
+                    grid.add(set1, 1, 1);
+                    grid.add(set2, 2, 1);
+                    grid.add(set3, 1, 2);
+                    grid.add(set4, 2, 2);
+                    grid.add(doubleSet, 1, 3);
+                    scoreroot.add(calculate, 0, 3);
+
+
+                    //add panes to the root
+                    scoreroot.add(scoresheet, 0, 0);
+                    scoreroot.add(sides, 0, 1);
+                    scoreroot.add(grid, 0, 2);
+                    //Scene teamScene = new Scene(teams, 300, 200);
+                    //matchPopup.setScene(teamScene);
+                    matchPopup.showAndWait();
+                }
+                else{  // If the game hasn't been played yet
+                    textArea.setText("--MATCH NOT PLAYED--");
+                    System.out.println("--MATCH NOT PLAYED--");
+                }
             }
         });
         
@@ -1278,6 +1404,7 @@ public class TheBRIANSystem extends Application {
         ComboBox homePlayer2 = new ComboBox();
         homePlayer2.setItems(homePlayers);
         homePlayer2.setMinWidth(100);
+        
         TextField finalTeamScores = new TextField("Final Team Scores");
         finalTeamScores.setEditable(false);
         TextField set11 = new TextField("0:0");
