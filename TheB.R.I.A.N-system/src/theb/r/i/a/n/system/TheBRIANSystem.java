@@ -3,7 +3,6 @@ TODO:
 
 ALL OF THE VIEWER PAGE
  - View Fixture and Result Chart
- - Show all Team Stats
  - Show all Team Rankings
  - Viewer Match Scores
  */
@@ -23,6 +22,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.paint.Color;
 import java.util.*;
+import static javafx.application.Application.launch;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -414,7 +414,6 @@ class TeamSelector{
         popupwindow.showAndWait();
     }
 }
-
 // Create a class that can handle the login for the admin page.
 class Login{
     static private void submitAndClose(Stage window, String password){
@@ -473,14 +472,50 @@ class Login{
     }
 }
 
+// Create a class that can handle the viewing of the statistics.
+class viewStats{
+    // Display the stats popup window
+    public static void display(){
+        // Set the properties for the popup login window
+        Stage popupwindow = new Stage();
+        popupwindow.initModality(Modality.APPLICATION_MODAL);
+        popupwindow.setTitle("View Statistics");
+
+        // Create the grid pane for the login window and set its properties
+        GridPane stats = new GridPane();
+        stats.setVgap(4);
+        stats.setHgap(4);
+        stats.setPadding(new Insets(5, 5, 5, 5));
+        
+        stats.add(new Label("Matches Played"), 1, 0);
+        stats.add(new Label("Matches Won"), 2, 0);
+        stats.add(new Label("Sets Won"), 3, 0);
+        
+        for(int i = 0; i < TheBRIANSystem.teamsArray.size(); i++){
+            stats.add(new Label(TheBRIANSystem.teamsArray.get(i).getName()), 0, i + 1);
+            for(int c = 0; c < 3; c++){
+                stats.add(new Label(TheBRIANSystem.statisticsArray.get(i)[c]), c + 1, i + 1);
+            }
+        }
+        
+
+        // Set the scene and display the popup window
+        Scene statsscene = new Scene(stats, 300, 200);
+        popupwindow.setScene(statsscene);
+        popupwindow.showAndWait();
+    }
+}
+
 // Create a class to be a second thread in the program that will update the 
 // statistics every 100 seconds
 class Statistics implements Runnable {
     // Create a function to update the statistics
     static public void updateStats(){
-        System.out.println("UPDATE STATS");
+        TheBRIANSystem.statisticsArray.clear();
+        for(int i = 0; i < TheBRIANSystem.teamsArray.size(); i++){
+            TheBRIANSystem.statisticsArray.add(new String[] {Integer.toString(TheBRIANSystem.teamsArray.get(i).getMatchesPlayed()), Integer.toString(TheBRIANSystem.teamsArray.get(i).getMatchesWon()), Integer.toString(TheBRIANSystem.teamsArray.get(i).getSetsWon())});
+        }
     }
-    
     @Override
     public void run(){
         // Set the start time as the current time
@@ -534,6 +569,9 @@ public class TheBRIANSystem extends Application {
             }
         }
     }
+    
+    // Create the object to hold the stats
+    public static List<String[]> statisticsArray = new ArrayList<String[]>();
     
     // Obserable list vairables of the teams to be used in combo boxes
     ObservableList<String> teamObservableList = FXCollections.observableArrayList();
@@ -701,6 +739,7 @@ public class TheBRIANSystem extends Application {
         catch (FileNotFoundException e){
             System.out.println("Match files not found");
         }
+        Statistics.updateStats();
     }
     
     // Set the auth flag to false
@@ -715,6 +754,7 @@ public class TheBRIANSystem extends Application {
        
         // Run the initial setup function that loads in data
         initialSetup();
+            
         //create the main tab pane that will be the basis of the whole UI
         TabPane tabs = new TabPane();
         
@@ -1059,7 +1099,7 @@ public class TheBRIANSystem extends Application {
         teamStats.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                textArea.setText("--VIEWING TEAM STATISTICS--");
+                viewStats.display();
                 System.out.println("--VIEWING STATISTICS--");
             }
         });
@@ -1305,16 +1345,16 @@ public class TheBRIANSystem extends Application {
                         awayTeam.setValue(matchesArray.get(i).getAwayTeam().getName());
                         // Set the homePlayer1 combo box to the homePlayer1
                         // first name
-                        homePlayer1.setValue(matchesArray.get(i).getHomePlayer1().getFirstName());
+                        homePlayer1.setValue(matchesArray.get(i).getHomePlayer1().getFullName());
                         // Set the homePlayer2 combo box to the homePlayer2
                         // first name
-                        homePlayer2.setValue(matchesArray.get(i).getHomePlayer2().getFirstName());
+                        homePlayer2.setValue(matchesArray.get(i).getHomePlayer2().getFullName());
                         // Set the awayPlayer1 combo box to the awayPlayer1
                         // first name
-                        awayPlayer1.setValue(matchesArray.get(i).getAwayPlayer1().getFirstName());
+                        awayPlayer1.setValue(matchesArray.get(i).getAwayPlayer1().getFullName());
                         // Set the awayPlayer2 combo box to the awayPlayer2
                         // first name
-                        awayPlayer2.setValue(matchesArray.get(i).getAwayPlayer2().getFirstName());
+                        awayPlayer2.setValue(matchesArray.get(i).getAwayPlayer2().getFullName());
                         
                         // Set all of the text fields to their appropriate scores
                         set11.setText(Integer.toString(matchesArray.get(i).sets.get(0).games.get(0).getHomeScore()) + ":" + Integer.toString(matchesArray.get(i).sets.get(0).games.get(0).getAwayScore()));
