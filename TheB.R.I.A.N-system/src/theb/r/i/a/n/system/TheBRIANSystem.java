@@ -361,15 +361,23 @@ class Team{
 
 // A class to handle selecting two teams
 class TeamSelector{
-
+    
+    static Match match;
+    static boolean match_found = false;
     static private void submitAndClose(Stage window, String homeTeam, String awayTeam){
         
-        for(int i = 0; i < TheBRIANSystem.matchesArray.size() - 1; i++){
+        for(int i = 0; i < TheBRIANSystem.matchesArray.size(); i++){
             if((TheBRIANSystem.matchesArray.get(i).getHomeTeam().getName().equals(homeTeam)) && TheBRIANSystem.matchesArray.get(i).getAwayTeam().getName().equals(awayTeam)){
-                TheBRIANSystem.selectedMatch = TheBRIANSystem.matchesArray.get(i);
-                TheBRIANSystem.matchPlayed = true;
+                match = TheBRIANSystem.matchesArray.get(i);
+                match_found = true;
             }
         }
+        
+        if(match_found){
+            TheBRIANSystem.selectedMatch = match;
+            match_found = false;
+        }
+        
         window.close();
     }
     
@@ -592,6 +600,9 @@ public class TheBRIANSystem extends Application {
     // Create the arrays that will hold the teams and matches
     public static List<Match> matchesArray = new ArrayList<>();
     public static List<Team> teamsArray = new ArrayList<>();
+    
+    public static List<String[]> statisticsArray = new ArrayList<String[]>();
+    
     public static List<String[]> fixtures = new ArrayList<String[]>();
     public static int first_fixture = 0;
     
@@ -1931,6 +1942,69 @@ public class TheBRIANSystem extends Application {
                     sets.add(setd);
                     
                     match.setSets(sets);
+                    
+                    Team matchHomeTeam = new Team("");
+                    Team matchAwayTeam = new Team("");
+                    
+                    for(int i = 0; i < teamsArray.size(); i++){
+                        if(teamsArray.get(i).getName().equals(homeTeam.getValue())){
+                            matchHomeTeam = teamsArray.get(i);
+                        }
+                    }
+                    
+                    match.setHomeTeam(matchHomeTeam);
+                    
+                    for(int i = 0; i < teamsArray.size(); i++){
+                        if(teamsArray.get(i).getName().equals(awayTeam.getValue())){
+                            matchAwayTeam = teamsArray.get(i);
+                        }
+                    }
+                    
+                    match.setAwayTeam(matchAwayTeam);
+                    
+                    Player matchHomePlayer1 = new Player("","");
+                    Player matchHomePlayer2 = new Player("","");
+                    Player matchAwayPlayer1 = new Player("","");
+                    Player matchAwayPlayer2 = new Player("","");
+                    
+                    for(int i = 0; i < matchHomeTeam.players.size(); i++){
+                        if(matchHomeTeam.players.get(i).getFullName().equals(homePlayer1.getValue())){
+                            matchHomePlayer1 = matchHomeTeam.players.get(i);
+                        }
+                    }
+                    
+                    match.setHomePlayer1(matchHomePlayer1);
+                    
+                    for(int i = 0; i < matchHomeTeam.players.size(); i++){
+                        if(matchHomeTeam.players.get(i).getFullName().equals(homePlayer2.getValue())){
+                            matchHomePlayer2 = matchHomeTeam.players.get(i);
+                        }
+                    }
+                    
+                    match.setHomePlayer2(matchHomePlayer2);
+                    
+                    for(int i = 0; i < matchAwayTeam.players.size(); i++){
+                        if(matchAwayTeam.players.get(i).getFullName().equals(awayPlayer1.getValue())){
+                            matchAwayPlayer1 = matchAwayTeam.players.get(i);
+                        }
+                    }
+                    
+                    match.setAwayPlayer1(matchAwayPlayer1);
+                    
+                    for(int i = 0; i < matchAwayTeam.players.size(); i++){
+                        if(matchAwayTeam.players.get(i).getFullName().equals(awayPlayer2.getValue())){
+                            matchAwayPlayer2 = matchAwayTeam.players.get(i);
+                        }
+                    }
+                    
+                    match.setAwayPlayer2(matchAwayPlayer2);
+                    
+                    for(int s = 0; s < 5; s++){
+                        match.sets.get(s).calculateWinner();
+                    }
+                            
+                    match.calculateWinner();
+                    finalTeamScores.setText(Integer.toString(match.getHomeScore()) + ":" + Integer.toString(match.getAwayScore()));
                     
                     matchesArray.add(match);
                     fixtures_generation();
