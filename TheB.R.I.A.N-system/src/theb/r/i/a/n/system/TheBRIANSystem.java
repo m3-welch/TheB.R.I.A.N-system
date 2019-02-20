@@ -592,6 +592,9 @@ public class TheBRIANSystem extends Application {
     // Create the arrays that will hold the teams and matches
     public static List<Match> matchesArray = new ArrayList<>();
     public static List<Team> teamsArray = new ArrayList<>();
+    
+    public static List<String[]> statisticsArray = new ArrayList<String[]>();
+    
     public static List<String[]> fixtures = new ArrayList<String[]>();
     public static int first_fixture = 0;
     
@@ -1180,8 +1183,8 @@ public class TheBRIANSystem extends Application {
                 ranks.setHgap(4);
                 ranks.setPadding(new Insets(5, 5, 5, 5));
                 
-                ranks.add(new Label("Rank"), 0, 0);
-                ranks.add(new Label("Team Names:"), 1, 0);
+                ranks.add(new Label("Rank "), 0, 0);
+                ranks.add(new Label("Team Names "), 1, 0);
                 ranks.add(new Label("Matches won"), 2, 0);
                 
                 int maxWins = 0;
@@ -1210,6 +1213,7 @@ public class TheBRIANSystem extends Application {
                     ranks.add(new Label(teamsArray.get(index).getName()), 1, popupIndex);
                     ranks.add(new Label(Integer.toString(teamsArray.get(index).getMatchesWon())), 2, popupIndex);
                     popupIndex++;
+                    winOrder.remove(0);
                 }
                 
                 Scene ranksScene = new Scene(ranks, 200, 200);
