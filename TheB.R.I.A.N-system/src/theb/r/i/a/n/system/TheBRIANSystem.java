@@ -609,22 +609,23 @@ public class TheBRIANSystem extends Application {
     //public static String[][] fixtures = new String[teamsArray.size()][teamsArray.size()];
       
     public void fixtures_generation(){
-       String[][] matches = new String[teamsArray.size()][teamsArray.size()];
+        String[][] matches = new String[teamsArray.size()][teamsArray.size()];
         
-      String homeTeam;
-      String awayTeam;
-      String homeScore;
-      String awayScore;
-      boolean matchFound = false;
-      Match match = new Match();
-      
+        fixtures.clear();
+       
+        String homeScore;
+        String awayScore;
+        boolean matchFound = false;
+        Match match = new Match();
+        
         for (int i = 0; i < teamsArray.size(); i++){
             for(int n = 0; n < teamsArray.size(); n++){
                 if (n == i){
                     matches[i][n] = ("---");
                 }
                 else{
-                    
+                   matchFound = false; 
+
                     for(int c = first_fixture; c < matchesArray.size(); c++){
                         if(matchesArray.get(c).getHomeTeam().getName().equals(teamsArray.get(i).getName())){
                             if(matchesArray.get(c).getAwayTeam().getName().equals(teamsArray.get(n).getName())){
@@ -632,23 +633,9 @@ public class TheBRIANSystem extends Application {
                                 matchFound = true;
                             }
                         }
-                    }
-                    
-                    
-                    /*
-                    
-                    homeTeam = teamsArray.get(i).name;
-                    awayTeam = teamsArray.get(n).name;
-                    
-                    for(int c = 0; c < matchesArray.size(); c++){
-                        if((matchesArray.get(c).getHomeTeam().getName().equals(homeTeam)) && matchesArray.get(c).getAwayTeam().getName().equals(awayTeam)){
-                            //if()
-                            match = matchesArray.get(c);
-                            matchFound = true;
-                        }
-                    }
-                    */
-                    if((matchFound)){ //&& (match.getMatchID() > first_fixture)){
+                   }
+
+                    if((matchFound)){ 
                         homeScore = Integer.toString(match.homeScore);
                         awayScore = Integer.toString(match.awayScore);
                         matches[i][n] = homeScore + ":" + awayScore;
@@ -1033,7 +1020,7 @@ public class TheBRIANSystem extends Application {
         generateFixturesButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                first_fixture = matchesArray.get(matchesArray.size() - 1).getMatchID();
+                first_fixture = matchesArray.size();
                 fixtures_generation();
                 System.out.println("FIXTURES GENERATED");
             }
@@ -1191,8 +1178,8 @@ public class TheBRIANSystem extends Application {
                 ranks.setHgap(4);
                 ranks.setPadding(new Insets(5, 5, 5, 5));
                 
-                ranks.add(new Label("Rank"), 0, 0);
-                ranks.add(new Label("Team Names:"), 1, 0);
+                ranks.add(new Label("Rank "), 0, 0);
+                ranks.add(new Label("Team Names "), 1, 0);
                 ranks.add(new Label("Matches won"), 2, 0);
                 
                 int maxWins = 0;
@@ -1221,6 +1208,7 @@ public class TheBRIANSystem extends Application {
                     ranks.add(new Label(teamsArray.get(index).getName()), 1, popupIndex);
                     ranks.add(new Label(Integer.toString(teamsArray.get(index).getMatchesWon())), 2, popupIndex);
                     popupIndex++;
+                    winOrder.remove(0);
                 }
                 
                 Scene ranksScene = new Scene(ranks, 200, 200);
