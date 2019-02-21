@@ -569,7 +569,7 @@ class Statistics implements Runnable {
         // Set the start time as the current time
         long start = (System.currentTimeMillis() / 1000);
         long current = start;
-        long elapsed = current;
+        long elapsed;
         boolean reset = false;
 
         //while the thread is running, do this loop
@@ -1203,15 +1203,15 @@ public class TheBRIANSystem extends Application {
                     maxWins--;
                 }
                 
-                int index;
+                int teamIndex;
                 int popupIndex = 1;
                 while(winOrder.size() > 0){
-                    index = winOrder.get(0);
+                    teamIndex = winOrder.get(winOrder.size() - 1);
                     ranks.add(new Label(Integer.toString(popupIndex)), 0, popupIndex);
-                    ranks.add(new Label(teamsArray.get(index).getName()), 1, popupIndex);
-                    ranks.add(new Label(Integer.toString(teamsArray.get(index).getMatchesWon())), 2, popupIndex);
+                    ranks.add(new Label(teamsArray.get(teamIndex).getName()), 1, popupIndex);
+                    ranks.add(new Label(Integer.toString(teamsArray.get(teamIndex).getMatchesWon())), 2, popupIndex);
                     popupIndex++;
-                    winOrder.remove(0);
+                    winOrder.remove(winOrder.size() - 1);
                 }
                 
                 Scene ranksScene = new Scene(ranks, 200, 200);
