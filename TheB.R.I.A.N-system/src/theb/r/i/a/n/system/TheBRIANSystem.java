@@ -366,6 +366,8 @@ class TeamSelector{
     static boolean match_found = false;
     static private void submitAndClose(Stage window, String homeTeam, String awayTeam){
         
+        TheBRIANSystem.matchPlayed = false;
+        
         for(int i = 0; i < TheBRIANSystem.matchesArray.size(); i++){
             if((TheBRIANSystem.matchesArray.get(i).getHomeTeam().getName().equals(homeTeam)) && TheBRIANSystem.matchesArray.get(i).getAwayTeam().getName().equals(awayTeam)){
                 match = TheBRIANSystem.matchesArray.get(i);
@@ -375,6 +377,7 @@ class TeamSelector{
         
         if(match_found){
             TheBRIANSystem.selectedMatch = match;
+            TheBRIANSystem.matchPlayed = true;
             match_found = false;
         }
         
