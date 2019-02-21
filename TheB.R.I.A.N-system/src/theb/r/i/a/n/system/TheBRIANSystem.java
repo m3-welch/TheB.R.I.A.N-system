@@ -360,10 +360,11 @@ class Team{
 }
 
 // A class to handle selecting two teams
-class TeamSelector{
+abstract class TeamSelector{
     
     static Match match;
     static boolean match_found = false;
+    
     static private void submitAndClose(Stage window, String homeTeam, String awayTeam){
         
         TheBRIANSystem.matchPlayed = false;
@@ -426,7 +427,7 @@ class TeamSelector{
     }
 }
 // Create a class that can handle the login for the admin page.
-class Login{
+abstract class Login{
     static private void submitAndClose(Stage window, String password){
         // If the password is correct, set the authorisation to true and close
         // the login window
@@ -484,7 +485,7 @@ class Login{
 }
 
 // Create a class that can handle the viewing of the statistics.
-class viewStats{
+abstract class viewStats{
     // Display the stats popup window
     public static void display(){
         // Set the properties for the popup login window
@@ -517,7 +518,7 @@ class viewStats{
     }
 }
 
-class viewFixturesPopup{
+abstract class viewFixturesPopup{
     // Display the stats popup window
     public static void display(){
         // Set the properties for the popup login window
@@ -568,7 +569,7 @@ class Statistics implements Runnable {
     public void run(){
         // Set the start time as the current time
         long start = (System.currentTimeMillis() / 1000);
-        long current = start;
+        long current;
         long elapsed;
         boolean reset = false;
 
@@ -1893,7 +1894,7 @@ public class TheBRIANSystem extends Application {
                     newGamed3.setAwayScore(gamed3AwayScore);
                     
                     Set set1 = new Set();
-                    List<Game> games1 = new ArrayList<Game>();
+                    List<Game> games1 = new ArrayList<>();
                     games1.add(newGame11);
                     games1.add(newGame12);
                     games1.add(newGame13);
@@ -1914,7 +1915,7 @@ public class TheBRIANSystem extends Application {
                     sets.add(set1);
                     
                     Set set2 = new Set();
-                    List<Game> games2 = new ArrayList<Game>();
+                    List<Game> games2 = new ArrayList<>();
                     games2.add(newGame21);
                     games2.add(newGame22);
                     games2.add(newGame23);
@@ -1935,7 +1936,7 @@ public class TheBRIANSystem extends Application {
                     sets.add(set2);
                     
                     Set set3 = new Set();
-                    List<Game> games3 = new ArrayList<Game>();
+                    List<Game> games3 = new ArrayList<>();
                     games3.add(newGame31);
                     games3.add(newGame32);
                     games3.add(newGame33);
@@ -1956,7 +1957,7 @@ public class TheBRIANSystem extends Application {
                     sets.add(set3);
                     
                     Set set4 = new Set();
-                    List<Game> games4 = new ArrayList<Game>();
+                    List<Game> games4 = new ArrayList<>();
                     games4.add(newGame41);
                     games4.add(newGame42);
                     games4.add(newGame43);
@@ -1977,7 +1978,7 @@ public class TheBRIANSystem extends Application {
                     sets.add(set4);
                     
                     Set setd = new Set();
-                    List<Game> gamesd = new ArrayList<Game>();
+                    List<Game> gamesd = new ArrayList<>();
                     gamesd.add(newGamed1);
                     gamesd.add(newGamed2);
                     gamesd.add(newGamed3);
