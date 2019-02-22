@@ -1,10 +1,3 @@
-/*
-TODO: 
-
-ALL OF THE VIEWER PAGE
- - View Fixture and Result Chart
- - Show all Team Rankings
- */
 package theb.r.i.a.n.system;
 
 
@@ -16,7 +9,6 @@ import javafx.stage.*;
 import javafx.geometry.*;
 import javafx.scene.paint.*;
 import java.util.*;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import javafx.application.Application;
@@ -30,7 +22,6 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-
 
 
 // Create a class to represent the game data struture. Has the appropriate get 
@@ -63,7 +54,8 @@ class Game{
     public void setWinner(Team team){
         winner = team;
     }
-    
+
+    // Return a string version of the scores for a game by joining homeScore and awayScore with a ':'
     @Override
     public String toString(){
         return homeScore + ":" + awayScore;
@@ -108,6 +100,8 @@ class Set{
     // performing calculations on that number.
     public void calculateWinner(){
         int home = 0;
+
+        // Calculate how many games the homeTeam has won and set the winner of each game to the appropriate team
         for(int i = 0; i < 3; i++){
             if(games.get(i).homeScore > games.get(i).awayScore){
                 home++;
@@ -117,6 +111,9 @@ class Set{
                 games.get(i).setWinner(awayTeam);
             }
         }
+
+        // If teh homeTeam has won 2 or more games (e.g. best of 3: winning the set), set them to the set winner,
+        // otherwise, set the set winner to awayTeam
         if(home >= 2){
             winner = homeTeam;
         }
@@ -207,11 +204,15 @@ class Match{
     // performing the calculations on that number
     public void calculateWinner(){
         int home = 0;
+        // Find out how many sets the homeTeam has won
         for(int i = 0; i < 5; i++){
             if(sets.get(i).winner == homeTeam){
                 home++;
             }
         }
+
+        // If the homeTeam has won 3 or more sets, then set the homeTeam as the winner and work out the overall scores
+        // of the match, otherwise set the winner to the awayTeam and calculate the final scores
         if(home >= 3){
             homeScore = home;
             awayScore = 5 - home;
@@ -365,18 +366,22 @@ abstract class TeamSelector{
     
     static Match match;
     static boolean match_found = false;
-    
+
+    // Define a function that will handle the sumbission of the two teams and the closing of the window
     static private void submitAndClose(Stage window, String homeTeam, String awayTeam){
         
         TheBRIANSystem.matchPlayed = false;
-        
+
+        // Try and find if the match between the two teams exists
         for(int i = 0; i < TheBRIANSystem.matchesArray.size(); i++){
             if((TheBRIANSystem.matchesArray.get(i).getHomeTeam().getName().equals(homeTeam)) && TheBRIANSystem.matchesArray.get(i).getAwayTeam().getName().equals(awayTeam)){
                 match = TheBRIANSystem.matchesArray.get(i);
                 match_found = true;
             }
         }
-        
+
+        // If the match between the two teams does exist, set the global variable of the selectMatch to the found match
+        // and set the global variable of matchPlayed to true
         if(match_found){
             TheBRIANSystem.selectedMatch = match;
             TheBRIANSystem.matchPlayed = true;
@@ -385,7 +390,7 @@ abstract class TeamSelector{
         
         window.close();
     }
-    
+
     public static void display(){
         // Set the properties for the popup team selector window
         Stage popupwindow = new Stage();
@@ -400,17 +405,17 @@ abstract class TeamSelector{
         }
         
         // Create the combo boxes
-        //Home team combo box
+        // Home team combo box
         ComboBox comboHomeTeam = new ComboBox();
         comboHomeTeam.setMinWidth(100);
         comboHomeTeam.getItems().addAll(teamNames);
         
-        //Away team combo box
+        // Away team combo box
         ComboBox comboAwayTeam = new ComboBox();
         comboAwayTeam.setMinWidth(100);
         comboAwayTeam.getItems().addAll(teamNames);
         
-        //Make the grid pane and add the features in place
+        // Make the grid pane and add the features in place
         GridPane teams = new GridPane();
         teams.add(new Label("Select the home and away team:"), 0, 0);
         teams.add(new Label("Home Team:"), 0, 1);
@@ -418,7 +423,8 @@ abstract class TeamSelector{
         teams.add(new Label("Away Team:"), 0, 2);
         teams.add(comboAwayTeam, 1, 2);
         teams.add(submit, 0, 3);
-        
+
+        // Handle the button press by calling the submitAndClose functiom
         submit.setOnAction(e-> submitAndClose(popupwindow, comboHomeTeam.getValue().toString(), comboAwayTeam.getValue().toString()));
         
         // Set the scene and display
@@ -427,12 +433,17 @@ abstract class TeamSelector{
         popupwindow.showAndWait();
     }
 }
+
+
 // Create a class that can handle the login for the admin page.
 abstract class Login{
+
+    // Define a function that handles the submission of the password and the closing of the window
     static private void submitAndClose(Stage window, String password){
+
         // If the password is correct, set the authorisation to true and close
         // the login window
-        if(password.equals("admin")){
+        if(password.equals("admin")) {
             TheBRIANSystem.auth = true;
             window.close();
         }
@@ -448,6 +459,7 @@ abstract class Login{
     
     // Display the login popup window
     public static void display(){
+
         // Set the properties for the popup login window
         Stage popupwindow = new Stage();
         popupwindow.initModality(Modality.APPLICATION_MODAL);
@@ -458,6 +470,8 @@ abstract class Login{
         PasswordField password = new PasswordField();
         Button submit = new Button("Submit");
         submit.setOnAction(e-> submitAndClose(popupwindow, password.getText()));
+
+        // Allow the user to press enter while focused on the passwordfield to submit
         password.setOnKeyPressed(new EventHandler<KeyEvent>(){
             @Override
             public void handle(KeyEvent keyEvent){
@@ -487,8 +501,10 @@ abstract class Login{
 
 // Create a class that can handle the viewing of the statistics.
 abstract class viewStats{
+
     // Display the stats popup window
     public static void display(){
+
         // Set the properties for the popup login window
         Stage popupwindow = new Stage();
         popupwindow.initModality(Modality.APPLICATION_MODAL);
@@ -499,18 +515,22 @@ abstract class viewStats{
         stats.setVgap(4);
         stats.setHgap(4);
         stats.setPadding(new Insets(5, 5, 5, 5));
-        
+
+        // Create the labels for the top row of the statistics table
         stats.add(new Label("Matches Played"), 1, 0);
         stats.add(new Label("Matches Won"), 2, 0);
         stats.add(new Label("Sets Won"), 3, 0);
-        
+
+        // For each row in the statistics table...
         for(int i = 0; i < TheBRIANSystem.teamsArray.size(); i++){
+            // Print the name of the team first..
             stats.add(new Label(TheBRIANSystem.teamsArray.get(i).getName()), 0, i + 1);
+            // Then for each cell in the row...
             for(int c = 0; c < 3; c++){
+                // Print the stats in the correct place
                 stats.add(new Label(TheBRIANSystem.statisticsArray.get(i)[c]), c + 1, i + 1);
             }
         }
-        
 
         // Set the scene and display the popup window
         Scene statsscene = new Scene(stats, 300, 200);
@@ -520,6 +540,7 @@ abstract class viewStats{
 }
 
 abstract class viewFixturesPopup{
+
     // Display the stats popup window
     public static void display(){
 
@@ -534,17 +555,18 @@ abstract class viewFixturesPopup{
         fixts.setVgap(4);
         fixts.setHgap(4);
         fixts.setPadding(new Insets(5, 5, 5, 5));
-        
-        //stats.add(new Label("Matches Played"), 1, 0);
-        
+
+        // print the team names across the top of the fixtures table
         for(int i = 0; i < TheBRIANSystem.teamsArray.size(); i++){
             fixts.add(new Label(TheBRIANSystem.teamsArray.get(i).getName()), 0, i + 1);
         }
-        
+
+        // print the teams names down the left of the fixtures table
         for(int i = 0; i < TheBRIANSystem.teamsArray.size(); i++){
             fixts.add(new Label(TheBRIANSystem.teamsArray.get(i).getName()),i + 1, 0);
         }
-        
+
+        // add the actual fixtures to the table
         for(int i = 0; i < TheBRIANSystem.teamsArray.size(); i++){
             for(int c = 0; c < TheBRIANSystem.teamsArray.size(); c++){
                 fixts.add(new Label(TheBRIANSystem.fixtures.get(i)[c]), c + 1, i + 1);
@@ -561,6 +583,7 @@ abstract class viewFixturesPopup{
 // Create a class to be a second thread in the program that will update the 
 // statistics every 100 seconds
 class Statistics implements Runnable {
+
     // Create a function to update the statistics
     static public void updateStats(){
         TheBRIANSystem.statisticsArray.clear();
@@ -568,6 +591,8 @@ class Statistics implements Runnable {
             TheBRIANSystem.statisticsArray.add(new String[] {Integer.toString(TheBRIANSystem.teamsArray.get(i).getMatchesPlayed()), Integer.toString(TheBRIANSystem.teamsArray.get(i).getMatchesWon()), Integer.toString(TheBRIANSystem.teamsArray.get(i).getSetsWon())});
         }
     }
+
+    // Overriden run functions that allows the class to be run simultaneously with the main class
     @Override
     public void run(){
         // Set the start time as the current time
@@ -637,15 +662,17 @@ public class TheBRIANSystem extends Application {
         String awayScore;
         boolean matchFound = false;
         Match match = new Match();
-        
+
+        //loop through all the teams (e.g. top left to bottom right of the fixtures table)
         for (int i = 0; i < teamsArray.size(); i++){
             for(int n = 0; n < teamsArray.size(); n++){
+                // if the teams are the same, print '---' as a team cannot play against themselves
                 if (n == i){
                     matches[i][n] = ("---");
                 }
                 else{
                    matchFound = false; 
-
+                    // try and see if the match between the two teams exists
                     for(int c = 0; c < matchesArray.size(); c++){
                         if(matchesArray.get(c).getHomeTeam().getName().equals(teamsArray.get(i).getName())){
                             if(matchesArray.get(c).getAwayTeam().getName().equals(teamsArray.get(n).getName())){
@@ -655,16 +682,19 @@ public class TheBRIANSystem extends Application {
                         }
                     }
 
+                    // if the match between the two teams does exists, print the match scores in the fixtures table
                     if((matchFound)){ 
                         homeScore = Integer.toString(match.homeScore);
                         awayScore = Integer.toString(match.awayScore);
                         matches[i][n] = homeScore + ":" + awayScore;
                     }
                     else{
+                        // print np (not played) if the match between the two teams has not been played
                         matches[i][n] = ("np");
                     }
                 }
             }
+            // add the row for that team to the fixtures table
             fixtures.add(matches[i]);
         }      
     }
