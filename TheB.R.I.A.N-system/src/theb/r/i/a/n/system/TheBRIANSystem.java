@@ -522,6 +522,8 @@ abstract class viewStats{
 abstract class viewFixturesPopup{
     // Display the stats popup window
     public static void display(){
+
+        TheBRIANSystem.fixtures_generation();
         // Set the properties for the popup login window
         Stage popupwindow = new Stage();
         popupwindow.initModality(Modality.APPLICATION_MODAL);
@@ -544,7 +546,7 @@ abstract class viewFixturesPopup{
         }
         
         for(int i = 0; i < TheBRIANSystem.teamsArray.size(); i++){
-            for(int c = 0; c < 3; c++){
+            for(int c = 0; c < TheBRIANSystem.teamsArray.size(); c++){
                 fixts.add(new Label(TheBRIANSystem.fixtures.get(i)[c]), c + 1, i + 1);
             }
         }
@@ -626,11 +628,11 @@ public class TheBRIANSystem extends Application {
     public static Border thinBorder = new Border(new BorderStroke(Color.BLACK, 
             BorderStrokeStyle.SOLID, new CornerRadii(1), new BorderWidths(1)));
       
-    public void fixtures_generation(){
+    public static void fixtures_generation(){
         String[][] matches = new String[teamsArray.size()][teamsArray.size()];
         
         fixtures.clear();
-       
+
         String homeScore;
         String awayScore;
         boolean matchFound = false;
@@ -644,14 +646,14 @@ public class TheBRIANSystem extends Application {
                 else{
                    matchFound = false; 
 
-                    for(int c = first_fixture; c < matchesArray.size(); c++){
+                    for(int c = 0; c < matchesArray.size(); c++){
                         if(matchesArray.get(c).getHomeTeam().getName().equals(teamsArray.get(i).getName())){
                             if(matchesArray.get(c).getAwayTeam().getName().equals(teamsArray.get(n).getName())){
                                 match = matchesArray.get(c);
                                 matchFound = true;
                             }
                         }
-                   }
+                    }
 
                     if((matchFound)){ 
                         homeScore = Integer.toString(match.homeScore);
@@ -995,6 +997,8 @@ public class TheBRIANSystem extends Application {
                 
                 // Get the team name from the combo box
                 String selectedTeamName = teamList.getValue().toString();
+
+                System.out.println(forename + " " + surname + " has been added to " + selectedTeamName);
                 
                 for(int i = 0; i < teamsArray.size(); i++){
                     if(teamsArray.get(i).getName().equals(selectedTeamName)){
