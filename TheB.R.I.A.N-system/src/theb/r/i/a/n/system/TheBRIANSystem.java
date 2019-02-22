@@ -14,13 +14,14 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.*;
 import javafx.geometry.*;
+import javafx.scene.paint.*;
+import java.util.*;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.paint.*;
-import java.util.*;
 import static javafx.application.Application.launch;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -610,7 +611,20 @@ public class TheBRIANSystem extends Application {
     public static List<String[]> fixtures = new ArrayList<String[]>();
     public static int first_fixture = 0;
     
-    //public static String[][] fixtures = new String[teamsArray.size()][teamsArray.size()];
+    // Obserable list vairables of the teams to be used in combo boxes
+    ObservableList<String> teamObservableList = FXCollections.observableArrayList();
+    ObservableList<String> homePlayers = FXCollections.observableArrayList();
+    ObservableList<String> awayPlayers = FXCollections.observableArrayList();
+   
+    // Boolean variables to be used throguh out the code
+    public static Match selectedMatch = new Match();
+    public static boolean matchPlayed = false;
+    
+    //Create border variables to be used
+    public static Border thickBorder = new Border(new BorderStroke(Color.BLACK, 
+            BorderStrokeStyle.SOLID, new CornerRadii(2), new BorderWidths(2)));
+    public static Border thinBorder = new Border(new BorderStroke(Color.BLACK, 
+            BorderStrokeStyle.SOLID, new CornerRadii(1), new BorderWidths(1)));
       
     public void fixtures_generation(){
         String[][] matches = new String[teamsArray.size()][teamsArray.size()];
@@ -654,17 +668,7 @@ public class TheBRIANSystem extends Application {
     }
     
     
-    // Obserable list vairables of the teams to be used in combo boxes
-    ObservableList<String> teamObservableList = FXCollections.observableArrayList();
-    ObservableList<String> homePlayers = FXCollections.observableArrayList();
-    ObservableList<String> awayPlayers = FXCollections.observableArrayList();
-   
-    public static Match selectedMatch = new Match();
-    public static boolean matchPlayed = false;
     
-    //Create border variables to be used
-    public static Border thickBorder = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, new CornerRadii(2), new BorderWidths(2)));
-    public static Border thinBorder = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, new CornerRadii(1), new BorderWidths(1)));
     
     // Create a function that will handle the initialisation of files
     public void initialSetup(){
@@ -924,11 +928,19 @@ public class TheBRIANSystem extends Application {
         submitTeamName.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                // Get the text from the box
                 String teamName = newTeamName.getText();
+                // Create a team with this name
                 Team addTeam = new Team (teamName);
+                // Add the team to the arrays
                 teamsArray.add(addTeam);
                 teamObservableList.add(addTeam.getName());
                 System.out.println(addTeam.getName() + " has been added");
+                
+                // Update the fixtures and stats
+                first_fixture = matchesArray.size();
+                fixtures_generation();
+                Statistics.updateStats();
             }
         });
         
@@ -967,20 +979,31 @@ public class TheBRIANSystem extends Application {
         playerName.setPromptText("John Smith");
         Button addPlayer = new Button("Add Player");        
         ComboBox teamList = new ComboBox();
-        String[] comboTeamNames = new String[teamsArray.size()];
-        for (int i = 0; i < teamsArray.size(); i++){
-            comboTeamNames[i] = teamsArray.get(i).getName();
-        }
-        teamList.getItems().addAll(comboTeamNames);
+        teamList.setItems(teamObservableList);
+        teamList.getSelectionModel().selectFirst();
         
         // Create a handler for the add player button click
         addPlayer.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                fixtures_generation();
+                // Get player name from the text box
+                String newPlayerName = playerName.getText();
+                //Split the name into first and last name
+                String[] splitName = newPlayerName.split(" ");
+                String forename = splitName[0];
+                String surname = splitName[1];
+                
+                // Get the team name from the combo box
+                String selectedTeamName = teamList.getValue().toString();
+                
+                for(int i = 0; i < teamsArray.size(); i++){
+                    if(teamsArray.get(i).getName().equals(selectedTeamName)){
+                        teamsArray.get(i).addPlayer(new Player(forename, surname));
+                    }
+                }
+                
             }
         });
-        
         
         //Add the nodes to the new player grid pane
         newPlayerGrid.add(playerName, 0, 0);
