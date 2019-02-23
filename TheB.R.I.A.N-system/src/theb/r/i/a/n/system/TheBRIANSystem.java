@@ -632,20 +632,23 @@ public class TheBRIANSystem extends Application {
                 ranks.setVgap(4);
                 ranks.setHgap(4);
                 ranks.setPadding(new Insets(5, 5, 5, 5));
-                
+
+                // add the labels along the top of the rankings chart
                 ranks.add(new Label("Rank "), 0, 0);
                 ranks.add(new Label("Team Names "), 1, 0);
                 ranks.add(new Label("Matches won"), 2, 0);
                 
                 int maxWins = 0;
                 List<Integer> winOrder = new ArrayList<Integer>();
-                
+
+                // Find the highest number of matches won
                 for (int i = 0; i < teamsArray.size(); i++){
                     if(teamsArray.get(i).getMatchesWon() > maxWins){
                         maxWins = teamsArray.get(i).getMatchesWon();
                     }
                 }
-                
+
+                // Find the index of each team in the teamsArray in score order
                 while(winOrder.size() < teamsArray.size()){
                     for(int j = 0; j < teamsArray.size(); j++){
                         if(teamsArray.get(j).getMatchesWon() == maxWins){
@@ -654,7 +657,8 @@ public class TheBRIANSystem extends Application {
                     }
                     maxWins--;
                 }
-                
+
+                // Add the teams to the popup window in the correct order
                 int teamIndex;
                 int popupIndex = 1;
                 while(winOrder.size() > 0){
@@ -665,7 +669,8 @@ public class TheBRIANSystem extends Application {
                     popupIndex++;
                     winOrder.remove(winOrder.size() - 1);
                 }
-                
+
+                // set the scene and show the window
                 Scene ranksScene = new Scene(ranks, 200, 200);
                 rankPopup.setScene(ranksScene);
                 rankPopup.showAndWait();
@@ -1100,10 +1105,15 @@ public class TheBRIANSystem extends Application {
             @Override
             public void handle(ActionEvent event) {
                 System.out.println("--CALCULATING AND SUBMITTING--");
+
+                // If the scoresheet being submitted is a previous one being modified...
                 if(modify){
                     modify = false;
+                    // find the right match..
                     for(int i = 0; i < matchesArray.size(); i++){
                         if(matchID == matchesArray.get(i).getMatchID()){
+
+                            // Set all of the home and away scores for each game
                             String game11 = set11.getText();
                             String[] scores11 = game11.split(":");
                             int game11HomeScore = Integer.parseInt(scores11[0]);
@@ -1208,22 +1218,30 @@ public class TheBRIANSystem extends Application {
                             int gamed3AwayScore = Integer.parseInt(scoresd3[1]);
                             matchesArray.get(i).sets.get(4).games.get(2).setHomeScore(gamed3HomeScore);
                             matchesArray.get(i).sets.get(4).games.get(2).setAwayScore(gamed3AwayScore);
-                            
+
+                            // Calculate the set winners
                             for(int s = 0; s < 5; s++){
                                 matchesArray.get(i).sets.get(s).calculateWinner();
                             }
-                            
+
+                            // calculate the mactch winner
                             matchesArray.get(i).calculateWinner();
+
+                            //display the final scores and generate fixtures for those scores
                             finalTeamScores.setText(Integer.toString(matchesArray.get(i).getHomeScore()) + ":" + Integer.toString(matchesArray.get(i).getAwayScore()));
                             fixtures_generation();
                         }
                     }
                 }
+
+                // if the socresheet being submitted is not a previous one being modified (e.g. new scoresheet)
                 else if(!modify){
+                    // Create a new match and set it to the next matchID
                     Match match = new Match();
                     match.setMatchID(matchID);
                     List<Set> sets = new ArrayList<>();
-                    
+
+                    // set the games and sets to be what the user has inputted
                     String game11 = set11.getText();
                     String[] scores11 = game11.split(":");
                     int game11HomeScore = Integer.parseInt(scores11[0]);
@@ -1343,7 +1361,8 @@ public class TheBRIANSystem extends Application {
                     Game newGamed3 = new Game();
                     newGamed3.setHomeScore(gamed3HomeScore);
                     newGamed3.setAwayScore(gamed3AwayScore);
-                    
+
+                    // add the games to the set and set the home and away team for each set
                     Set set1 = new Set();
                     List<Game> games1 = new ArrayList<>();
                     games1.add(newGame11);
@@ -1448,9 +1467,12 @@ public class TheBRIANSystem extends Application {
                     }
                     
                     sets.add(setd);
-                    
+
+                    // add the sets to the match
                     match.setSets(sets);
-                    
+
+
+                    // set the match home and away teams
                     for(int i = 0; i < teamsArray.size(); i++){
                         if(teamsArray.get(i).getName().equals(homeTeam.getValue())){
                             match.setHomeTeam(teamsArray.get(i));
@@ -1462,7 +1484,8 @@ public class TheBRIANSystem extends Application {
                             match.setAwayTeam(teamsArray.get(i));
                         }
                     }
-                    
+
+                    // create the players and set them to the correct players for the match
                     Player matchHomePlayer1 = new Player("","");
                     Player matchHomePlayer2 = new Player("","");
                     Player matchAwayPlayer1 = new Player("","");
@@ -1499,14 +1522,18 @@ public class TheBRIANSystem extends Application {
                     }
                     
                     match.setAwayPlayer2(matchAwayPlayer2);
-                    
+
+                    // calculate the winner of each set
                     for(int s = 0; s < 5; s++){
                         match.sets.get(s).calculateWinner();
                     }
-                            
+
+                    // calculate the match winner
                     match.calculateWinner();
+                    // Display the final scores
                     finalTeamScores.setText(Integer.toString(match.getHomeScore()) + ":" + Integer.toString(match.getAwayScore()));
-                    
+
+                    // add the match to the matches array and generate fixtures with the new match
                     matchesArray.add(match);
                     fixtures_generation();
                 }
