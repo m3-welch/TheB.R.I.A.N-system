@@ -1046,7 +1046,7 @@ public class TheBRIANSystem extends Application {
                 
                 // For each of the items in the matches array
                 for(int i = 0;i<matchesArray.size();i++){
-                    // If the filename matches the filename the user has chosen,
+                    // If the match ID matches the match ID the user has chosen,
                     // do this
                     if(matchesArray.get(i).getMatchID() == match.getMatchID()){
                         // Set a flag to true to show a file has been modified
