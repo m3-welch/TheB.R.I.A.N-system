@@ -5,6 +5,7 @@ package theb.r.i.a.n.system;
 import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.*;
 import javafx.geometry.*;
 import javafx.scene.paint.*;
@@ -322,9 +323,9 @@ public class TheBRIANSystem extends Application {
         
         //create a grid pane for the admin tab and set all the preferences
         GridPane admin = new GridPane();
-        admin.setVgap(4);
+        admin.setVgap(10);
         admin.setHgap(4);
-        admin.setPadding(new Insets(5, 5, 5, 5));
+        admin.setPadding(new Insets(50, 50, 50, 50));
         
         ////////////////////////////////
         ///                          ///
@@ -341,7 +342,7 @@ public class TheBRIANSystem extends Application {
         //preferences
         GridPane newTeamGrid = new GridPane();
         newTeamGrid.setVgap(4);
-        newTeamGrid.setHgap(4);
+        newTeamGrid.setHgap(10);
         newTeamGrid.setPadding(new Insets(5, 5, 5, 5));
         newTeam.setText("Enter a new team");
         
@@ -412,24 +413,34 @@ public class TheBRIANSystem extends Application {
         addPlayer.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                // Get player name from the text box
-                String newPlayerName = playerName.getText();
-                //Split the name into first and last name
-                String[] splitName = newPlayerName.split(" ");
-                String forename = splitName[0];
-                String surname = splitName[1];
-                
-                // Get the team name from the combo box
-                String selectedTeamName = teamList.getValue().toString();
+                try {
+                    // Get player name from the text box
+                    String newPlayerName = playerName.getText();
+                    //Split the name into first and last name
+                    String[] splitName = newPlayerName.split(" ");
+                    String forename = splitName[0];
+                    String surname = splitName[1];
 
-                System.out.println(forename + " " + surname + " has been added to " + selectedTeamName);
-                
-                for(int i = 0; i < teamsArray.size(); i++){
-                    if(teamsArray.get(i).getName().equals(selectedTeamName)){
-                        teamsArray.get(i).addPlayer(new Player(forename, surname));
+                    // Get the team name from the combo box
+                    String selectedTeamName = teamList.getValue().toString();
+
+                    System.out.println(forename + " " + surname + " has been added to " + selectedTeamName);
+
+                    // add the player to the selected team
+                    for (int i = 0; i < teamsArray.size(); i++) {
+                        if (teamsArray.get(i).getName().equals(selectedTeamName)) {
+                            teamsArray.get(i).addPlayer(new Player(forename, surname));
+                        }
                     }
+
                 }
-                
+                // Make sure the user enters the name in the correct format
+                catch(Exception e){
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setTitle("ERROR! WRONG NAME FORMAT!");
+                    alert.setHeaderText("The player name must be in the format of firstname lastname (e.g. John Smith).");
+                    alert.showAndWait();
+                }
             }
         });
         
@@ -557,21 +568,13 @@ public class TheBRIANSystem extends Application {
         viewer.setVgap(6);
         viewer.setHgap(6);
         viewer.setPadding(new Insets(5, 5, 5, 5));
-        viewer.setGridLinesVisible(true);
         GridPane buttons = new GridPane();
-        buttons.setGridLinesVisible(true);
-        GridPane text = new GridPane();
-        text.setGridLinesVisible(true);
         GridPane root = new GridPane();
-        root.setGridLinesVisible(true);
-        buttons.setVgap(150);
-        buttons.setHgap(6);
-        buttons.setPadding(new Insets(5, 5, 5, 5));
-        text.setVgap(6);
-        text.setHgap(6);
-        text.setPadding(new Insets(5, 5, 5, 5));
+        buttons.setVgap(100);
+        buttons.setHgap(100);
+        buttons.setPadding(new Insets(50, 50, 50, 50));
         root.setVgap(6);
-        root.setHgap(200);
+        root.setHgap(6);
         root.setPadding(new Insets(5, 5, 5, 5));
         
         //add the nodes to the viewer grid pane
@@ -579,26 +582,30 @@ public class TheBRIANSystem extends Application {
         Button teamStats = new Button("Show All Team Stats");
         Button teamRanks = new Button("Show All Team Rankings");
         Button viewScores = new Button("View A Match Scores");
-        viewFixtures.setMinWidth(300);
-        teamStats.setMinWidth(300);
-        teamRanks.setMinWidth(300);
-        viewScores.setMinWidth(300);
-        
+        viewFixtures.setMinWidth(200);
+        teamStats.setMinWidth(200);
+        teamRanks.setMinWidth(200);
+        viewScores.setMinWidth(200);
+        viewFixtures.setMinHeight(50);
+        teamStats.setMinHeight(50);
+        teamRanks.setMinHeight(50);
+        viewScores.setMinHeight(50);
+        viewFixtures.wrapTextProperty().setValue(true);
+        teamStats.wrapTextProperty().setValue(true);
+        teamRanks.wrapTextProperty().setValue(true);
+        viewScores.wrapTextProperty().setValue(true);
+        viewFixtures.textAlignmentProperty().set(TextAlignment.CENTER);
+        teamStats.textAlignmentProperty().set(TextAlignment.CENTER);
+        teamRanks.textAlignmentProperty().set(TextAlignment.CENTER);
+        viewScores.textAlignmentProperty().set(TextAlignment.CENTER);
+
         // Set the preferences of the nodes
         viewFixtures.setPrefWidth(205);
-        Label textArea = new Label();
-        textArea.setPrefSize(400, 800);
-        textArea.setWrapText(true);
-        textArea.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, null, new BorderWidths(1))));
-        textArea.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
-        textArea.setAlignment(Pos.TOP_LEFT);
         
         // Create a handler for the view fixtures button
         viewFixtures.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                textArea.setText("--VIEWING FIXTURES AND RESULT CHART--");
-                             
                 ViewFixturesPopup.display();
                                
                 System.out.println("--VIEW FIXTURES AND RESULTS--");
@@ -619,7 +626,6 @@ public class TheBRIANSystem extends Application {
         teamRanks.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                textArea.setText("--VIEWING TEAM RANKINGS--");
                 System.out.println("--VIEWING RANKINGS--");
                 
                 // Create a popup to view the team rankings
@@ -685,7 +691,6 @@ public class TheBRIANSystem extends Application {
                 matchPlayed = false;
                 TeamSelector.display();
                 if(matchPlayed){  // If the selected match has been played
-                    textArea.setText("--VIEWING SCORES--");
                     System.out.println("--VIEWING SCORES--");
                     Match match = selectedMatch;
                     
@@ -832,7 +837,6 @@ public class TheBRIANSystem extends Application {
                     matchPopup.showAndWait();
                 }
                 else{  // If the game hasn't been played yet
-                    textArea.setText("--MATCH NOT PLAYED--");
                     System.out.println("--MATCH NOT PLAYED--");
                 }
             }
@@ -841,11 +845,9 @@ public class TheBRIANSystem extends Application {
         //add the nodes to the viewer grid pane
         buttons.add(viewFixtures, 0, 0);
         buttons.add(teamStats, 0, 1);
-        buttons.add(teamRanks, 0, 2);
-        buttons.add(viewScores, 0, 3);
-        text.add(textArea, 0, 0);
+        buttons.add(teamRanks, 1, 0);
+        buttons.add(viewScores, 1, 1);
         root.add(buttons, 0, 0);
-        root.add(text, 1, 0);
         
         //add the grid pane to the viewer tab
         viewerPage.setContent(root);
@@ -1597,7 +1599,7 @@ public class TheBRIANSystem extends Application {
         tabs.setSide(Side.LEFT);
         
         //set the scene with the window dimensions
-        Scene scene = new Scene(tabs, 800, 600);
+        Scene scene = new Scene(tabs, 650, 460);
         
         //set the title and show
         primaryStage.setTitle("TheB.R.I.A.N. system");
