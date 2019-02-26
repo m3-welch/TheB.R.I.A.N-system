@@ -88,10 +88,6 @@ public class InitialSetup {
                     // Set the matchID to the first line in the file
                     matchID = Integer.parseInt(matchScanner.next());
                     
-                    if(matchID == 1){
-                        System.out.println("help");
-                    }
-                    
                     match.setMatchID(matchID);
                     // Set the filename of the match to the filename
                     match.setFileName(matchFiles[f].getName());
