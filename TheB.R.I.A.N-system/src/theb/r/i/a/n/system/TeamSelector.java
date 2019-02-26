@@ -4,6 +4,7 @@ package theb.r.i.a.n.system;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -27,6 +28,7 @@ abstract class TeamSelector{
             if((TheBRIANSystem.matchesArray.get(i).getHomeTeam().getName().equals(homeTeam)) && TheBRIANSystem.matchesArray.get(i).getAwayTeam().getName().equals(awayTeam)){
                 match = TheBRIANSystem.matchesArray.get(i);
                 match_found = true;
+                window.close();
             }
         }
 
@@ -36,9 +38,22 @@ abstract class TeamSelector{
             TheBRIANSystem.selectedMatch = match;
             TheBRIANSystem.matchPlayed = true;
             match_found = false;
+            window.close();
+        }
+        else{
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Match not played yet");
+            alert.setHeaderText("Match not played yet");
+            alert.showAndWait();
         }
 
-        window.close();
+        if(homeTeam.equals(awayTeam)){
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("ERROR! Please choose again.");
+            alert.setHeaderText("ERROR! SAME TEAM SELECTED TWICE!");
+            alert.showAndWait();
+        }
+        
     }
 
     public static void display(){

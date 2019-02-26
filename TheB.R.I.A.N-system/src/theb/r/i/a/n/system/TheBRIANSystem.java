@@ -34,7 +34,7 @@ public class TheBRIANSystem extends Application {
     public static int first_fixture = 0;
     
     // Obserable list vairables of the teams to be used in combo boxes
-    ObservableList<String> teamObservableList = FXCollections.observableArrayList();
+    static ObservableList<String> teamObservableList = FXCollections.observableArrayList();
     ObservableList<String> homePlayers = FXCollections.observableArrayList();
     ObservableList<String> awayPlayers = FXCollections.observableArrayList();
    
@@ -48,216 +48,7 @@ public class TheBRIANSystem extends Application {
     public static Border thinBorder = new Border(new BorderStroke(Color.BLACK, 
             BorderStrokeStyle.SOLID, new CornerRadii(1), new BorderWidths(1)));
       
-    public static void fixtures_generation(){
-        String[][] matches = new String[teamsArray.size()][teamsArray.size()];
-        
-        fixtures.clear();
-
-        String homeScore;
-        String awayScore;
-        boolean matchFound = false;
-        Match match = new Match();
-
-        //loop through all the teams (e.g. top left to bottom right of the fixtures table)
-        for (int i = 0; i < teamsArray.size(); i++){
-            for(int n = 0; n < teamsArray.size(); n++){
-                // if the teams are the same, print '---' as a team cannot play against themselves
-                if (n == i){
-                    matches[i][n] = ("---");
-                }
-                else{
-                   matchFound = false; 
-                    // try and see if the match between the two teams exists
-                    for(int c = 0; c < matchesArray.size(); c++){
-                        if(matchesArray.get(c).getHomeTeam().getName().equals(teamsArray.get(i).getName())){
-                            if(matchesArray.get(c).getAwayTeam().getName().equals(teamsArray.get(n).getName())){
-                                match = matchesArray.get(c);
-                                matchFound = true;
-                            }
-                        }
-                    }
-
-                    // if the match between the two teams does exists, print the match scores in the fixtures table
-                    if((matchFound)){ 
-                        homeScore = Integer.toString(match.homeScore);
-                        awayScore = Integer.toString(match.awayScore);
-                        matches[i][n] = homeScore + ":" + awayScore;
-                    }
-                    else{
-                        // print np (not played) if the match between the two teams has not been played
-                        matches[i][n] = ("np");
-                    }
-                }
-            }
-            // add the row for that team to the fixtures table
-            fixtures.add(matches[i]);
-        }      
-    }
     
-    
-    
-    
-    // Create a function that will handle the initialisation of files
-    public void initialSetup(){
-        //initial generation of fixtures
-        fixtures_generation();
-        
-        // Create the array of the list of files in the matches folder
-        File matchesPath = new File("./matches");
-        File [] matchFiles = matchesPath.listFiles();
-        for(int i = 0; i<matchFiles.length; i++){
-            if(!matchFiles[i].isFile()){
-                matchFiles[i].delete();
-            }
-        }
-        
-        // Create the array of the list of files in the teams folder
-        File teamsPath = new File("./teams");
-        File [] teamFiles = teamsPath.listFiles();
-        for(int i = 0;i<teamFiles.length;i++){
-            if(!teamFiles[i].isFile()){
-                teamFiles[i].delete();
-            }
-        }
-        
-        try{
-            // For each team in the teams folder
-            for(int f = 0;f<teamFiles.length;f++){
-                // Create a new scanner for the file
-                Scanner teamScanner = new Scanner(teamFiles[f]);
-                // While the file has more information, do this
-                while(teamScanner.hasNextLine()){
-                    // Create a new team with the name of the team
-                    Team team = new Team(teamScanner.next());
-                    // Make an array of players from the list of players in the
-                    // file
-                    String players = teamScanner.next();
-                    String[] playersArray = players.split(",");
-                    for(int i = 0;i < playersArray.length;i++){
-                        Player player = new Player(playersArray[i], playersArray[i+1]);
-                        i++;
-                        team.addPlayer(player);
-                    }   
-                    
-                    // Set the team's matches played, matches won and sets won
-                    team.matchesPlayed = Integer.parseInt(teamScanner.next());
-                    team.matchesWon = Integer.parseInt(teamScanner.next());
-                    team.setsWon = Integer.parseInt(teamScanner.next());
-                    // Add the team to the team array
-                    teamsArray.add(team);
-                    teamObservableList.add(team.getName());
-                }
-                System.out.println("Loaded initial team data");
-            }
-        }
-        catch (FileNotFoundException e){
-            System.out.println("Team file not found");
-        }
-        
-        try{
-            int matchID;
-            // For each match in the matches folder
-            for(int f = 0; f<matchFiles.length;f++){
-                // Create a new scanner for that file
-                Scanner matchScanner = new Scanner(matchFiles[f]);
-                // While the file has another line, do this
-                while(matchScanner.hasNextLine()){
-                    // Create a new match
-                    Match match = new Match();
-                    // Set the matchID to the first line in the file
-                    matchID = Integer.parseInt(matchScanner.next());
-                    match.setMatchID(matchID);
-                    // Set the filename of the match to the filename
-                    match.setFileName(matchFiles[f].getName());
-                    
-                    // Set the match's home team
-                    String homeTeam = matchScanner.next();
-                    for(int i=0;i<teamsArray.size();i++){
-                        if(teamsArray.get(i).name.equals(homeTeam)){
-                            match.setHomeTeam(teamsArray.get(i));
-                        }
-                    }
-                    
-                    // Set the match's away team
-                    String awayTeam = matchScanner.next();
-                    for(int i=0;i<teamsArray.size();i++){
-                        if(teamsArray.get(i).name.equals(awayTeam)){
-                            match.setAwayTeam(teamsArray.get(i));
-                        }
-                    }
-
-                    // Add the homePlayer1 to the match
-                    String homePlayer1FullName = matchScanner.next();
-                    homePlayer1FullName = homePlayer1FullName.replace(",", " ");
-                    for(int i = 0;i<match.homeTeam.players.size();i++){
-                        if(match.homeTeam.players.get(i).getFullName().equals(homePlayer1FullName)){
-                            match.setHomePlayer1(match.homeTeam.players.get(i));                    }
-                    }
-
-                    // Add the homePlayer2 to the match
-                    String homePlayer2FullName = matchScanner.next();
-                    homePlayer2FullName = homePlayer2FullName.replace(",", " ");
-                    for(int i = 0;i<match.homeTeam.players.size();i++){
-                        if(match.homeTeam.players.get(i).getFullName().equals(homePlayer2FullName)){
-                            match.setHomePlayer2(match.homeTeam.players.get(i));                    }
-                    }
-
-                    // Add the awayPlayer1 to the match
-                    String awayPlayer1FullName = matchScanner.next();
-                    awayPlayer1FullName = awayPlayer1FullName.replace(",", " ");
-                    for(int i = 0;i<match.awayTeam.players.size();i++){
-                        if(match.awayTeam.players.get(i).getFullName().equals(awayPlayer1FullName)){
-                            match.setAwayPlayer1(match.awayTeam.players.get(i));                    }
-                    }
-
-                    // Add the awayPlayer2 to the match
-                    String awayPlayer2FullName = matchScanner.next();
-                    awayPlayer2FullName = awayPlayer2FullName.replace(",", " ");
-                    for(int i = 0;i<match.awayTeam.players.size();i++){
-                        if(match.awayTeam.players.get(i).getFullName().equals(awayPlayer2FullName)){
-                            match.setAwayPlayer2(match.awayTeam.players.get(i));                    }
-                    }
-                    
-                    // Create the list of sets to add the match
-                    List<Set> sets = new ArrayList<Set>();
-                    for(int i = 0;i<5;i++){
-                        Set set = new Set();
-                        set.homeTeam = match.homeTeam;
-                        set.awayTeam = match.awayTeam;
-                        String scores[] = matchScanner.next().split(",");
-                        List<Game> games = new ArrayList<Game>();
-                        for(int c = 0; c < 6;c++){
-                           Game game = new Game();
-                           game.setHomeScore(Integer.parseInt(scores[c]));
-                           game.setAwayScore(Integer.parseInt(scores[c + 1]));
-                           games.add(game);
-                           c++;
-                        }
-                        set.setGames(games);
-                        sets.add(set);
-                    }
-                    for(int i = 0;i<sets.size();i++){
-                        sets.get(i).calculateWinner();
-                    }
-                    match.setSets(sets);
-                    
-                    // Add the match to the matches array
-                    matchesArray.add(match);
-                    
-                    // Calculate the winner for each match
-                    for(int i = 0; i<matchesArray.size();i++){
-                        matchesArray.get(i).calculateWinner();
-                    }
-
-                }
-                System.out.println("Loaded initial scoresheets");
-            }
-        }
-        catch (FileNotFoundException e){
-            System.out.println("Match files not found");
-        }
-        Statistics.updateStats();
-    }
     
     // Set the auth flag to false
     static public boolean auth = false;
@@ -270,8 +61,8 @@ public class TheBRIANSystem extends Application {
     public void start(Stage primaryStage){
        
         // Run the initial setup function that loads in data
-        initialSetup();
-        fixtures_generation();
+        InitialSetup.initialSetup();
+        GenerateFixtures.fixtures_generation();
         //create the main tab pane that will be the basis of the whole UI
         TabPane tabs = new TabPane();
         
@@ -366,7 +157,7 @@ public class TheBRIANSystem extends Application {
                 
                 // Update the fixtures and stats
                 first_fixture = matchesArray.size();
-                fixtures_generation();
+                GenerateFixtures.fixtures_generation();
                 Statistics.updateStats();
             }
         });
@@ -487,7 +278,7 @@ public class TheBRIANSystem extends Application {
             @Override
             public void handle(ActionEvent event) {
                 first_fixture = matchesArray.size();
-                fixtures_generation();
+                GenerateFixtures.fixtures_generation();
                 System.out.println("FIXTURES GENERATED");
             }
         });
@@ -983,6 +774,66 @@ public class TheBRIANSystem extends Application {
         homePlayer2.setItems(homePlayers);
         homePlayer2.setMinWidth(100);
         
+        homeTeam.getSelectionModel().selectedItemProperty().addListener( (options, oldValue, newValue) -> {
+           if(newValue.equals(awayTeam.getValue())){
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("ERROR! Please try again.");
+                alert.setHeaderText("ERROR! SAME TEAM SELECTED TWICE");
+                alert.showAndWait();
+           }
+        }
+        ); 
+        
+        awayTeam.getSelectionModel().selectedItemProperty().addListener( (options, oldValue, newValue) -> {
+           if(newValue.equals(homeTeam.getValue())){
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("ERROR! Please try again.");
+                alert.setHeaderText("ERROR! SAME TEAM SELECTED TWICE");
+                alert.showAndWait();
+           }
+        }
+        ); 
+        
+        homePlayer1.getSelectionModel().selectedItemProperty().addListener( (options, oldValue, newValue) -> {
+           if(newValue.equals(homePlayer2.getValue())){
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("ERROR! Please try again.");
+                alert.setHeaderText("ERROR! SAME PLAYER SELECTED TWICE");
+                alert.showAndWait();
+           }
+        }
+        ); 
+        
+        homePlayer2.getSelectionModel().selectedItemProperty().addListener( (options, oldValue, newValue) -> {
+           if(newValue.equals(homePlayer1.getValue())){
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("ERROR! Please try again.");
+                alert.setHeaderText("ERROR! SAME PLAYER SELECTED TWICE");
+                alert.showAndWait();
+           }
+        }
+        ); 
+        
+        awayPlayer1.getSelectionModel().selectedItemProperty().addListener( (options, oldValue, newValue) -> {
+           if(newValue.equals(awayPlayer2.getValue())){
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("ERROR! Please try again.");
+                alert.setHeaderText("ERROR! SAME PLAYER SELECTED TWICE");
+                alert.showAndWait();
+           }
+        }
+        ); 
+        
+        awayPlayer2.getSelectionModel().selectedItemProperty().addListener( (options, oldValue, newValue) -> {
+           if(newValue.equals(awayPlayer1.getValue())){
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("ERROR! Please try again.");
+                alert.setHeaderText("ERROR! SAME PLAYER SELECTED TWICE");
+                alert.showAndWait();
+           }
+        }
+        ); 
+        
         TextField finalTeamScores = new TextField("Final Team Scores");
         finalTeamScores.setEditable(false);
         TextField set11 = new TextField("0:0");
@@ -1231,7 +1082,7 @@ public class TheBRIANSystem extends Application {
 
                             //display the final scores and generate fixtures for those scores
                             finalTeamScores.setText(Integer.toString(matchesArray.get(i).getHomeScore()) + ":" + Integer.toString(matchesArray.get(i).getAwayScore()));
-                            fixtures_generation();
+                            GenerateFixtures.fixtures_generation();
                         }
                     }
                 }
@@ -1537,7 +1388,7 @@ public class TheBRIANSystem extends Application {
 
                     // add the match to the matches array and generate fixtures with the new match
                     matchesArray.add(match);
-                    fixtures_generation();
+                    GenerateFixtures.fixtures_generation();
                 }
             }
         });
@@ -1599,7 +1450,7 @@ public class TheBRIANSystem extends Application {
         tabs.setSide(Side.LEFT);
         
         //set the scene with the window dimensions
-        Scene scene = new Scene(tabs, 650, 460);
+        Scene scene = new Scene(tabs, 650, 500);
         
         //set the title and show
         primaryStage.setTitle("TheB.R.I.A.N. system");

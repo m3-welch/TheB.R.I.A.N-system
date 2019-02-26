@@ -1,6 +1,7 @@
 package theb.r.i.a.n.system;
 
 
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -13,7 +14,7 @@ abstract class ViewFixturesPopup{
     // Display the stats popup window
     public static void display(){
 
-        TheBRIANSystem.fixtures_generation();
+        GenerateFixtures.fixtures_generation();
         // Set the properties for the popup login window
         Stage popupwindow = new Stage();
         popupwindow.initModality(Modality.APPLICATION_MODAL);
@@ -24,6 +25,11 @@ abstract class ViewFixturesPopup{
         fixts.setVgap(4);
         fixts.setHgap(4);
         fixts.setPadding(new Insets(5, 5, 5, 5));
+        
+        GridPane root = new GridPane();
+        root.setVgap(4);
+        root.setHgap(4);
+        root.setPadding(new Insets(5, 5, 5, 5));
 
         // print the team names across the top of the fixtures table
         for(int i = 0; i < TheBRIANSystem.teamsArray.size(); i++){
@@ -42,8 +48,19 @@ abstract class ViewFixturesPopup{
             }
         }
 
+        fixts.setBorder(TheBRIANSystem.thinBorder);
+        
+        Label homeTeamLabel = new Label("Home Team");
+        Label awayTeamLabel = new Label("Away Team");
+        root.setHalignment(homeTeamLabel, HPos.CENTER);
+        root.setHalignment(awayTeamLabel, HPos.CENTER);
+        
+        root.add(fixts, 1, 1);
+        root.add(homeTeamLabel, 0, 1);
+        root.add(awayTeamLabel, 1, 0);
+        
         // Set the scene and display the popup window
-        Scene fixtsscene = new Scene(fixts, 300, 200);
+        Scene fixtsscene = new Scene(root, 300, 200);
         popupwindow.setScene(fixtsscene);
         popupwindow.showAndWait();
     }
